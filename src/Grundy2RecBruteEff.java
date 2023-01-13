@@ -5,7 +5,12 @@ import java.util.Collections;
 /**
  * Grundy 2 v0
  * This version contains a method playAgainstAI()
- * This method allows a user to play Grundy Game
+ * This method allows a user to play Grundy Game VS the computer
+ * This method implement void testJouerGagnantEff() to test effectivness
+ * This version doesn't implement anything to improve performances
+ * 
+ * 
+ * Contains a cpt variable to test complexity
  */
 
 class Grundy2RecBruteEff {
@@ -101,16 +106,17 @@ class Grundy2RecBruteEff {
 
     /**
      * Test effectivness of jouerGagnant() method from counter and time
-     * from stickNB = 3 to stickNB = 25 where method is litterally dying
+     * 
      */
     void testJouerGagnantEff() {
-        System.out.println(" *** Testing Effectivness of jouerGagnant() v0 method");
+        System.out.println(" *** Testing Effectivness of jouerGagnant() v1 method");
         ArrayList<Integer> gameboard;
         double startTime;
         double endTime;
         double totalTime;
         boolean result;
-        for (int stickNB = 3 ; stickNB < 30 ; stickNB++){
+        int stickNB = 3;
+        while (true){
             // Variable initialization before calling jouerGagnant()
             gameboard = new ArrayList<Integer>();
             gameboard.add(stickNB);
@@ -128,6 +134,7 @@ class Grundy2RecBruteEff {
             System.out.println("counter : " + cpt);
             System.out.println("Total time : " +totalTime+"ms");
             System.out.println();
+            stickNB++;
 
         }
     }
@@ -189,7 +196,7 @@ class Grundy2RecBruteEff {
 
 
 
-    // Following are given methods by teachers
+    // << ------------------------  Following method are edited from given code -------------------------------------------->>
 
 
 

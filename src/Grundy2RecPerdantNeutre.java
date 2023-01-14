@@ -45,7 +45,7 @@ class Grundy2RecPerdantNeutre {
         //testIsFoundInWinningArrayList();
         testJouerGagnantEff();
         //testDisplay();
-        testJouerGagnant();
+        //testJouerGagnant();
         //testOccurenceTable();
         // testDeleteLosingKnownElements();
     }
@@ -77,25 +77,27 @@ class Grundy2RecPerdantNeutre {
         }
 		
 		else {
-            // System.out.println("decomposition");
-            // System.out.println("perdantes : " + perdantes);
-            // System.out.println("jeu" + jeu);
+
+            // Add rule 3.4 : The nature of a situation does not change if one adds or removes a losing situation
+            // Add rule 3.5 : A double is a losing situation
+            // Create a deepcopy of the  current gameboard
             ArrayList<Integer> narrowedGameboard = new ArrayList<>();
             for (int i = 0; i < jeu.size(); i++){
                 narrowedGameboard.add(jeu.get(i));
             }
+
+            // Editing the copy with the narrowed version
             deleteLosingKnownElements(narrowedGameboard, perdantes);
-            // System.out.println(narrowedGameboard);
+
+            // if the new narrowedGamemboard is empty, it's because all have been removed, so i'ts a losing situation
             if (narrowedGameboard.size() == 0){
                 ret = true;
             }
 
-            
 			// si il n'y a plus que des tas de 1 ou 2 allumettes dans le plateau de jeu
 			// alors la situation est forcément perdante (ret=true) = FIN de la récursivité
             if ( !estPossible(narrowedGameboard) ) {
                 ret = true;
-                // System.out.println("Returning true without anything");
             }
 			
 			else {
@@ -105,14 +107,12 @@ class Grundy2RecPerdantNeutre {
                 ArrayList<Integer> essai = new ArrayList<Integer>(); // size = 0
 				
                 ArrayList<Integer> occurrenceEssai; // Store occurrenceTable if this version of essai is in "perdantes", null if not
-                //deleteLosingKnownElements(essai, perdantes);
 				// toute première décomposition : enlever 1 allumette au premier tas qui possède
-                // System.out.println("Pass");
                 
                 
-                
-                // System.out.println("Pass");
-				// au moins 3 allumettes, ligne = -1 signifie qu'il n'y a plus de tas d'au moins 3 allumettes
+                // au moins 3 allumettes, ligne = -1 signifie qu'il n'y a plus de tas d'au moins 3 allumettes
+                // Currently searching for narrowed situations, because if the nature of the narrow version is the
+                // same as the full version
                 int ligne = premier(narrowedGameboard, essai);
                 while ( (ligne != -1) && ret) {
 					// mise en oeuvre de la règle numéro1
@@ -128,19 +128,19 @@ class Grundy2RecPerdantNeutre {
                         ret = false;
                     }
 
-
-                    // If the version of "essai" is'nt found in perdantes
+                    
                     else{
+
+                        // Testing if this version of essai is already stored in the winningArray
                         occurrenceEssai = isFoundInWinningArrayList(essai, gagnantes);
                         if (occurrenceEssai != null) {
                             ligne = suivant(narrowedGameboard, essai, ligne);
                         }
                         else {
 
-
-
-
+                            // If the version of essai has never been found, acting as normal
                             if (estPerdante(essai) == true) {
+
                                 // If the version is a loosing one, add it to perdantes
                                 perdantes.add(occurrenceTable(essai));
                                 ret = false;
@@ -148,6 +148,7 @@ class Grundy2RecPerdantNeutre {
                             } else {
                                 // génère la configuration d'essai suivante (c'est-à-dire UNE décomposition possible)
                                 // à partir du jeu, si ligne = -1 il n'y a plus de décomposition possible
+                                
                                 // if the version is a winning one, then adding it to gagnantes
                                 gagnantes.add(occurrenceTable(essai));
                                 ligne = suivant(narrowedGameboard, essai, ligne);
@@ -158,7 +159,6 @@ class Grundy2RecPerdantNeutre {
                 }
             }
         }
-		// System.out.println(ret);
         return ret;
     }
 	
@@ -169,13 +169,14 @@ class Grundy2RecPerdantNeutre {
 
 
     /**
-     * This method remove every element if it's known as a losing one because the nature doesn't change if we add or remove a losing situation
-     * This method also remove duplicates because x + x is always a losing situation
+     * This method set every element to 0 if it's known as a losing one because the nature doesn't change if we add or remove a losing situation
+     * This method also set to 0 duplicates because x + x is always a losing situation
      * @param gameboard the gameboard
      * @param losingArray the losingArrayList
      */
     void deleteLosingKnownElements(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray){
         
+        // Check integrity
         if (gameboard == null){
             return;
         }
@@ -185,21 +186,22 @@ class Grundy2RecPerdantNeutre {
         
         ArrayList<Integer> tmp = new ArrayList<>();
         ArrayList<Integer> tmpOccurrence = new ArrayList<>();
-        ArrayList<Integer> newGameboard = new ArrayList<>();
+        ArrayList<Integer> intersect = new ArrayList<>();
         
       
-        // Removing duplicates
-        
+        // Remove duplicates
         ArrayList<Integer> gameboardOccurrence = occurrenceTable(gameboard);
         int index;
         for (int i = 0; i < gameboardOccurrence.size(); i++){
+            // If an item is in an even quantity : set all appearance to 0
             if (gameboardOccurrence.get(i)%2 == 0){
                 for (int l = 0; l < gameboardOccurrence.get(i); l++){
 
                     index = gameboard.indexOf(Integer.valueOf(i));
                     gameboard.set(index,0);
                 }
-                
+
+            // If an item is in an odd quantity: set all appearances to 0 but leave one appearance
             } else {
                 for (int l = 0; l < gameboardOccurrence.get(i) -1; l++){
                     index = gameboard.indexOf(Integer.valueOf(i));
@@ -208,22 +210,32 @@ class Grundy2RecPerdantNeutre {
             }
         }
 
-        // Removing losing known situations
+        // Remove losing known situations
         for (int i = 0 ; i < gameboard.size() ; i++){
+            // Get elements one by one 
             tmp.clear();
             tmp.add(gameboard.get(i));
+
+            // Create it's occurrenceTable to compare
             tmpOccurrence = occurrenceTable(tmp);
+
+            // Compare with known losing arrangements
             for (int j = 0; j < losingArray.size(); j++){
+
+                // If the element is a losing one, then add it to intersect
                 if (tmpOccurrence.equals(losingArray.get(j))){
-                    newGameboard.add(gameboard.get(i));
+
+                    intersect.add(gameboard.get(i)); 
                 } 
             }
         }
-        // Transferring newGameboard content to current gameboard
-        
+
+        // Set 0 to every gameboard element if it's present in intersect
         for (int k = 0; k < gameboard.size(); k++){
-            for (int m = 0; m < newGameboard.size(); m++){
-                index = gameboard.indexOf((newGameboard.get(m)));
+            for (int m = 0; m < intersect.size(); m++){
+                index = gameboard.indexOf((intersect.get(m)));
+
+                // Avoid out of bound errors and set 0
                 if (index != -1){
                     gameboard.set(index,0);
                 }
@@ -234,20 +246,26 @@ class Grundy2RecPerdantNeutre {
 
 
     /**
-     * @param gameboard
-     * @param losingArray
-     * @param expected
+     * This method is used to test a given case of the deleteLosingKnownElements function
+     * @param gameboard the gameboard
+     * @param losingArray the ArrayList of losing arrangments (by occurrence : see occurrenceTable())
+     * @param expected Expected result
      */
     void testCaseDeleteLosingKnownElements(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray,ArrayList<Integer>expected ){
+        
+        // Display infos
         System.out.println(" *** Testing ...");
         System.out.println("Gameboard : " + gameboard);
         System.out.println("LosingArray : " + losingArray);
         System.out.println("Expected : " + expected);
-
+        
+        // Execute method
         deleteLosingKnownElements(gameboard, losingArray);
+
+        // Display output
         System.out.println("New gameboard: " + gameboard);
 
-        
+        // comparing with expected result
         if (expected.equals(gameboard)){
             System.out.println("OK !");
         } else {
@@ -257,6 +275,9 @@ class Grundy2RecPerdantNeutre {
 
     }
 
+    /**
+     * This method is used to test the deleteLosingKnownElements function
+     */
     void testDeleteLosingKnownElements(){
         // normal case
         ArrayList<Integer> gameboard = new ArrayList<>(Arrays.asList(1, 2,3,3,3, 4, 5, 6, 7, 8, 9));
@@ -267,14 +288,14 @@ class Grundy2RecPerdantNeutre {
         testCaseDeleteLosingKnownElements(gameboard, losingArray, expected);
 
 
-        // if losingArray is empty
+        // losingArray is empty case
         ArrayList<Integer> gameboard2 = new ArrayList<>(Arrays.asList(0,1,2,3,3,3, 4, 5, 6, 7, 8, 9));
         ArrayList<ArrayList<Integer>> losingArray2 = new ArrayList<>();
         ArrayList<Integer> expected2 = new ArrayList<>(Arrays.asList(0,1,2,0,0,3, 4, 5, 6, 7, 8, 9));
 
         testCaseDeleteLosingKnownElements(gameboard2, losingArray2, expected2);
 
-        // if losingArray as elements
+        // losingArray as some elements case
         ArrayList<Integer> gameboard3 = new ArrayList<>(Arrays.asList(0,1,2,3,3,3, 4, 5, 6, 7, 8, 9,10,10,10));
         ArrayList<ArrayList<Integer>> losingArray3 = new ArrayList<>();
         ArrayList<Integer> losingElt2 = new ArrayList<>(Arrays.asList(0,0,0));
@@ -284,11 +305,41 @@ class Grundy2RecPerdantNeutre {
         losingArray3.add(losingElt4);
         losingArray3.add(losingElt7);
         ArrayList<Integer> expected3 = new ArrayList<>(Arrays.asList(0,0,0,0,0,3, 0, 5, 6, 0, 8, 9,0,0,10));
-
         testCaseDeleteLosingKnownElements(gameboard3, losingArray3, expected3);
-
-
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // << ----------------------- Following methods aren't edited from v2 ----------------------------------------------- >> //
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -307,9 +358,11 @@ class Grundy2RecPerdantNeutre {
         if (gameboard == null) {
             return null;
         }
-        // Getting max value
+        // Getting max value (I observed that that max value of ArrayList([1]) is 2, i don't know why)
         int max = Collections.max(gameboard);
         ArrayList<Integer> occurrences = new ArrayList<>();
+
+        // avoid out of bound errors
         if (max < 2){
             max = 2;
         }
@@ -330,11 +383,6 @@ class Grundy2RecPerdantNeutre {
 
 
 
-
-
-    // << ----------------------- Following methods aren't edited from v1 ----------------------------------------------- >>
-
-
     /**
      * Test effectivness of jouerGagnant() method from counter and time
      * 
@@ -346,8 +394,8 @@ class Grundy2RecPerdantNeutre {
         double endTime;
         double totalTime;
         boolean result;
-        int stickNB = 7;
-        while(true && stickNB < 27){
+        int stickNB = 3;
+        while(true ){
             // Variable initialization before calling jouerGagnant()
             gameboard.clear();
             gameboard.add(stickNB);
@@ -370,8 +418,13 @@ class Grundy2RecPerdantNeutre {
             } else {
                 System.out.println("Not any winnable move found");
             }
-            System.out.println("counter : " + (int)cpt);
-            System.out.println("Total time : " + (int)totalTime + "ms");
+            System.out.print("counter : ");
+            System.out.println((int)cpt);
+
+            System.out.print("Total time : ");
+            
+            System.out.println((int)totalTime);
+            System.out.print("ms");
             System.out.println("Perdantes size : " + perdantes.size());
             System.out.println("Gagnantes size : " + gagnantes.size());
 

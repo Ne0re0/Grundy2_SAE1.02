@@ -20,7 +20,7 @@ import java.util.Collections;
  * Implements ArrayList<Integer> isFoundInWinningArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> winningArray)
  * that test if the occurrenceTable of the gameboard is stored in winningArray
  * 
- * Implements the deletions of losing situtations with 
+ * Implements the deletion of losing situations with 
  * void deleteLosingKnownElements(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray)
  * 
  * Contains a cpt variable to test effectivness

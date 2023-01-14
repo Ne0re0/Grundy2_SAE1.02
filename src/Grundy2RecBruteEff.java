@@ -21,11 +21,68 @@ class Grundy2RecBruteEff {
      */
     void principal() {
         //playAgainstAI();
-        testJouerGagnantEff();
+       
+        //testJouerGagnantEff();
         //testDisplay();
         //testJouerGagnant();
+        averageEfficiency();
 
     }
+
+    void averageEfficiency(){
+        ArrayList<Integer> gameboard = new ArrayList<Integer>();
+        double startTime;
+        double endTime;
+        double totalTime;
+        boolean result;
+
+        int maxStickNB = 25;    // Max value 
+        int testNB = 10;        // round number
+
+        System.out.println(" **** Calculation medium efficiency over " +  testNB +" tests ****");
+
+        double[] times = new double[maxStickNB];
+
+        for (int i = 0; i < testNB ; i++){
+            System.out.println(i+ "/" + testNB);
+            
+            // Making it fun
+            if (i == 0){
+                System.out.println(" \t You can go and make yourself a coffee ");
+            } else if (i == 4){
+                System.out.println(" \t Actually mining cryptos ... ");
+            } else if (i == 7){
+                System.out.println(" \t Almost done !");
+            } else if (i == 9){
+                System.out.println(" \t Last one !");
+            }
+
+
+
+            for (int stickNB = 3; stickNB < maxStickNB ; stickNB++) {
+                // Variable initialization before calling jouerGagnant()
+                gameboard.clear();
+                gameboard.add(stickNB);
+                cpt = 0;
+                startTime = System.currentTimeMillis();
+                result = jouerGagnant(gameboard);
+                endTime = System.currentTimeMillis();
+                totalTime = endTime - startTime;
+                times[stickNB] = times[stickNB] + totalTime;
+                stickNB++;
+            }
+        }
+        System.out.println("Getting results ...");
+        for (int i = 0; i < maxStickNB; i ++ ){
+            times[i] = times[i] / 10;
+        }
+        System.out.println("Here we are !");
+        for (int i = 0 ; i < times.length; i++){
+            System.out.println(times[i]);
+        }
+
+    }
+
 
     /**
      * This method allows a player to play Grundy game against an IA
@@ -196,7 +253,20 @@ class Grundy2RecBruteEff {
 
 
 
-    // << ------------------------  Following method are edited from given code -------------------------------------------->>
+
+
+
+
+
+
+    // << ------------------------  Following method aren't edited from given code -------------------------------------------->>
+
+
+
+
+
+
+
 
 
 

@@ -26,6 +26,8 @@ import java.util.Collections;
  * Implement rule 4.1 : Elements of sitations can be represented by their type
  * Two winning element of same type are losing
  * but two winning element of different type are winning
+ * With this rule, the method deleteLosingKnownElements become time wasting
+ * We can just apply this rule
  * 
  * Contains a cpt variable to test effectivness
  * Contains a class variable named perdantes which will store losing arrangments
@@ -33,7 +35,7 @@ import java.util.Collections;
  * Contains a basic array named "type" which has elements's types
  */
 
-class Grundy2RecPerdantNeutre {
+class Grundy2RecGplusGequalsP {
 
     double cpt;
     ArrayList<ArrayList<Integer>> perdantes = new ArrayList<ArrayList<Integer>>();
@@ -56,12 +58,6 @@ class Grundy2RecPerdantNeutre {
     }
 
 
-
-
-
-
-     
-    
 
 	
 	/**
@@ -91,8 +87,8 @@ class Grundy2RecPerdantNeutre {
                 narrowedGameboard.add(jeu.get(i));
             }
 
-            // Editing the copy with the narrowed version
-            deleteLosingKnownElements(narrowedGameboard, perdantes);
+            // Editing the copy with the new "type" rule and the narrowed version
+            deleteWinningElementCouples(narrowedGameboard);
 
             // if the new narrowedGamemboard is empty, it's because all have been removed, so i'ts a losing situation
             if (narrowedGameboard.size() == 0){
@@ -173,7 +169,55 @@ class Grundy2RecPerdantNeutre {
 
 
 
+    /**
+     * @param gameboard 
+     */
+    void deleteWinningElementCouples(ArrayList<Integer> gameboard){
+        if (gameboard == null){
+            return;
+        }
+
+        int element1;
+        int element2;
+        for (int i = 0; i < gameboard.size(); i++){
+            element1 = gameboard.get(i);
+            try {
+                if (type[element1] == 0){
+                    gameboard.set(i,0);
     
+                } else {
+                    for (int j = i+1; j < gameboard.size() ; j ++){
+                        element2 = gameboard.get(j);
+
+                        // If elements are equals, then set both to 0 because of rule 3.5
+                        if (element1 == element2){
+                            gameboard.set(i,0);
+                            gameboard.set(j,0);
+                            break;
+                        }
+                        try {
+                            if (type[element1] == type[element2]){
+                                gameboard.set(i,0);
+                                gameboard.set(j,0);
+                            }
+                        } catch (Exception e) {
+                            // value superior to 51
+                        }
+                        
+                    }
+                }
+            } catch (Exception e){
+                // value superior to 51
+            }
+            
+            
+            // } catch (Exception e) {
+            //     //System.err.println("deleteWinningElementCouples : Index out of bounds");
+            // }
+            
+        }
+    }
+
 
 
 
@@ -413,27 +457,27 @@ class Grundy2RecPerdantNeutre {
 
 
             cpt = 0;
-            System.out.println("Size : " + stickNB);
+            // System.out.println("Size : " + stickNB);
             startTime = System.currentTimeMillis();
             result = jouerGagnant(gameboard);
             endTime = System.currentTimeMillis();
             totalTime = endTime - startTime;
             if (result == true){
-                System.out.println("Winnable move found");
+                // System.out.println("Winnable move found");
             } else {
-                System.out.println("Not any winnable move found");
+                // System.out.println("Not any winnable move found");
             }
-            System.out.print("counter : ");
+            // System.out.print("counter : ");
             System.out.println((int)cpt);
 
-            System.out.print("Total time : ");
+            // System.out.print("Total time : ");
             
-            System.out.println((int)totalTime);
-            System.out.print("ms");
-            System.out.println("Perdantes size : " + perdantes.size());
-            System.out.println("Gagnantes size : " + gagnantes.size());
+            // System.out.println((int)totalTime);
+            // System.out.println("ms");
+            // System.out.println("Perdantes size : " + perdantes.size());
+            // System.out.println("Gagnantes size : " + gagnantes.size());
 
-            System.out.println();
+            // System.out.println();
             stickNB++;
 
         }

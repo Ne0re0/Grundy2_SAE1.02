@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -10,11 +9,11 @@ import java.util.Collections;
  * method isLosingDecomposition which compares the different dispositions with 
  * the known losing dispositions
  * 
- * Implement  ArrayList<Integer> occurrenceTable(ArrayList<Integer> gameboard)
+ * Implements  ArrayList<Integer> occurrenceTable(ArrayList<Integer> gameboard)
  * This method return the occurrence table of the given gameboard because the order
  * of lines isn't changing. It's used to compare gameboards.
  * 
- * Implement ArrayList<Integer> isFoundInLosingArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray)
+ * Implements ArrayList<Integer> isFoundInLosingArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray)
  * that test if the occurrenceTable of the gameboard is stored in losingArray
  * 
  * Contains a cpt variable to test effectivness

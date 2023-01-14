@@ -3,30 +3,32 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * Grundy 2 v1
+ * Grundy 2 v3
  * This version contains a method playAgainstAI()
  * This method allows a user to play Grundy Game VS the computer
  * This version implements the saving of losing dispositions as well as the 
  * method isLosingDecomposition which compares the different dispositions with 
  * the known losing dispositions
  * 
- * Implement  ArrayList<Integer> occurrenceTable(ArrayList<Integer> gameboard)
+ * Implements  ArrayList<Integer> occurrenceTable(ArrayList<Integer> gameboard)
  * This method return the occurrence table of the given gameboard because the order
  * of lines isn't changing. It's used to compare gameboards.
  * 
- * Implement ArrayList<Integer> isFoundInLosingArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray)
+ * Implements ArrayList<Integer> isFoundInLosingArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray)
  * that test if the occurrenceTable of the gameboard is stored in losingArray
  * 
- * Implement ArrayList<Integer> isFoundInWinningArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> winningArray)
+ * Implements ArrayList<Integer> isFoundInWinningArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> winningArray)
  * that test if the occurrenceTable of the gameboard is stored in winningArray
  * 
+ * Implements the deletions of losing situtations with 
+ * void deleteLosingKnownElements(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray)
  * 
  * Contains a cpt variable to test effectivness
  * Contains a class variable named perdantes which will store losing arrangments
  * Contains a class variable named gagnantes which will store winning arrangments
  */
 
-class Grundy2RecPerdEtGagn {
+class Grundy2RecPerdantNeutre {
 
     double cpt;
     ArrayList<ArrayList<Integer>> perdantes = new ArrayList<ArrayList<Integer>>();
@@ -37,15 +39,347 @@ class Grundy2RecPerdEtGagn {
      * Méthode principal du programme
      */
     void principal() {
+        
         //playAgainstAI();
         //testIsFoundInLosingArrayList();
-        // testIsFoundInWinningArrayList();
+        //testIsFoundInWinningArrayList();
         testJouerGagnantEff();
         //testDisplay();
-        //testJouerGagnant();
+        testJouerGagnant();
         //testOccurenceTable();
+        // testDeleteLosingKnownElements();
     }
 
+
+
+
+
+
+     
+    
+
+	
+	/**
+     * Méthode RECURSIVE qui indique si la configuration (du jeu actuel ou jeu d'essai) est perdante
+     * 
+     * I added an ArrayList<Integer> perdantes which store losing 
+     * dispositions under their occurence form (see occurrenceTable() method)
+     * 
+     * @param jeu plateau de jeu actuel (l'état du jeu à un certain moment au cours de la partie)
+     * @return vrai si la configuration (du jeu) est perdante, faux sinon
+     */
+    boolean estPerdante(ArrayList<Integer> jeu) {
+        cpt++;
+        boolean ret = true; // par défaut la configuration est perdante
+		
+        if (jeu == null) {
+            System.err.println("estPerdante(): le paramètre jeu est null");
+        }
+		
+		else {
+            // System.out.println("decomposition");
+            // System.out.println("perdantes : " + perdantes);
+            // System.out.println("jeu" + jeu);
+            ArrayList<Integer> narrowedGameboard = new ArrayList<>();
+            for (int i = 0; i < jeu.size(); i++){
+                narrowedGameboard.add(jeu.get(i));
+            }
+            deleteLosingKnownElements(narrowedGameboard, perdantes);
+            // System.out.println(narrowedGameboard);
+            if (narrowedGameboard.size() == 0){
+                ret = true;
+            }
+
+            
+			// si il n'y a plus que des tas de 1 ou 2 allumettes dans le plateau de jeu
+			// alors la situation est forcément perdante (ret=true) = FIN de la récursivité
+            if ( !estPossible(narrowedGameboard) ) {
+                ret = true;
+                // System.out.println("Returning true without anything");
+            }
+			
+			else {
+                
+				// création d'un jeu d'essais qui va examiner toutes les décompositions
+				// possibles à partir de jeu
+                ArrayList<Integer> essai = new ArrayList<Integer>(); // size = 0
+				
+                ArrayList<Integer> occurrenceEssai; // Store occurrenceTable if this version of essai is in "perdantes", null if not
+                //deleteLosingKnownElements(essai, perdantes);
+				// toute première décomposition : enlever 1 allumette au premier tas qui possède
+                // System.out.println("Pass");
+                
+                
+                
+                // System.out.println("Pass");
+				// au moins 3 allumettes, ligne = -1 signifie qu'il n'y a plus de tas d'au moins 3 allumettes
+                int ligne = premier(narrowedGameboard, essai);
+                while ( (ligne != -1) && ret) {
+					// mise en oeuvre de la règle numéro1
+					// Une situation (ou position) est dite perdante pour la machine (ou le joueur, peu importe) si et seulement si TOUTES 
+					// ses décompositions possibles (c-à-d TOUTES les actions qui consistent à décomposer un tas en 2 tas inégaux) sont 
+					// TOUTES gagnantes pour l’adversaire.
+					// Si UNE SEULE décomposition (à partir du jeu) est perdante (pour l'adversaire) alors la configuration n'EST PAS perdante.
+					// Ici l'appel à "estPerdante" est RECURSIF.
+
+                    // Testing if this version of "essai" is already found and stored in "perdantes"
+                    occurrenceEssai = isFoundInLosingArrayList(essai, perdantes);
+                    if (occurrenceEssai != null){
+                        ret = false;
+                    }
+
+
+                    // If the version of "essai" is'nt found in perdantes
+                    else{
+                        occurrenceEssai = isFoundInWinningArrayList(essai, gagnantes);
+                        if (occurrenceEssai != null) {
+                            ligne = suivant(narrowedGameboard, essai, ligne);
+                        }
+                        else {
+
+
+
+
+                            if (estPerdante(essai) == true) {
+                                // If the version is a loosing one, add it to perdantes
+                                perdantes.add(occurrenceTable(essai));
+                                ret = false;
+                                
+                            } else {
+                                // génère la configuration d'essai suivante (c'est-à-dire UNE décomposition possible)
+                                // à partir du jeu, si ligne = -1 il n'y a plus de décomposition possible
+                                // if the version is a winning one, then adding it to gagnantes
+                                gagnantes.add(occurrenceTable(essai));
+                                ligne = suivant(narrowedGameboard, essai, ligne);
+                                
+                            }
+                        }       
+                    }
+                }
+            }
+        }
+		// System.out.println(ret);
+        return ret;
+    }
+	
+
+
+
+
+
+
+    /**
+     * This method remove every element if it's known as a losing one because the nature doesn't change if we add or remove a losing situation
+     * This method also remove duplicates because x + x is always a losing situation
+     * @param gameboard the gameboard
+     * @param losingArray the losingArrayList
+     */
+    void deleteLosingKnownElements(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray){
+        
+        if (gameboard == null){
+            return;
+        }
+        if (gameboard.size() == 0){
+            return;
+        }
+        
+        ArrayList<Integer> tmp = new ArrayList<>();
+        ArrayList<Integer> tmpOccurrence = new ArrayList<>();
+        ArrayList<Integer> newGameboard = new ArrayList<>();
+        
+      
+        // Removing duplicates
+        
+        ArrayList<Integer> gameboardOccurrence = occurrenceTable(gameboard);
+        int index;
+        for (int i = 0; i < gameboardOccurrence.size(); i++){
+            if (gameboardOccurrence.get(i)%2 == 0){
+                for (int l = 0; l < gameboardOccurrence.get(i); l++){
+
+                    index = gameboard.indexOf(Integer.valueOf(i));
+                    gameboard.set(index,0);
+                }
+                
+            } else {
+                for (int l = 0; l < gameboardOccurrence.get(i) -1; l++){
+                    index = gameboard.indexOf(Integer.valueOf(i));
+                    gameboard.set(index,0);
+                }
+            }
+        }
+
+        // Removing losing known situations
+        for (int i = 0 ; i < gameboard.size() ; i++){
+            tmp.clear();
+            tmp.add(gameboard.get(i));
+            tmpOccurrence = occurrenceTable(tmp);
+            for (int j = 0; j < losingArray.size(); j++){
+                if (tmpOccurrence.equals(losingArray.get(j))){
+                    newGameboard.add(gameboard.get(i));
+                } 
+            }
+        }
+        // Transferring newGameboard content to current gameboard
+        
+        for (int k = 0; k < gameboard.size(); k++){
+            for (int m = 0; m < newGameboard.size(); m++){
+                index = gameboard.indexOf((newGameboard.get(m)));
+                if (index != -1){
+                    gameboard.set(index,0);
+                }
+                
+            }
+        }
+    }
+
+
+    /**
+     * @param gameboard
+     * @param losingArray
+     * @param expected
+     */
+    void testCaseDeleteLosingKnownElements(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray,ArrayList<Integer>expected ){
+        System.out.println(" *** Testing ...");
+        System.out.println("Gameboard : " + gameboard);
+        System.out.println("LosingArray : " + losingArray);
+        System.out.println("Expected : " + expected);
+
+        deleteLosingKnownElements(gameboard, losingArray);
+        System.out.println("New gameboard: " + gameboard);
+
+        
+        if (expected.equals(gameboard)){
+            System.out.println("OK !");
+        } else {
+            System.out.println("ERROR");
+        }
+        
+
+    }
+
+    void testDeleteLosingKnownElements(){
+        // normal case
+        ArrayList<Integer> gameboard = new ArrayList<>(Arrays.asList(1, 2,3,3,3, 4, 5, 6, 7, 8, 9));
+        ArrayList<Integer> losingElt1 = new ArrayList<>(Arrays.asList(0,0,0));
+        ArrayList<ArrayList<Integer>> losingArray = new ArrayList<>();
+        losingArray.add(losingElt1);
+        ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0,0,0,0,3,4,5, 6, 7, 8, 9));
+        testCaseDeleteLosingKnownElements(gameboard, losingArray, expected);
+
+
+        // if losingArray is empty
+        ArrayList<Integer> gameboard2 = new ArrayList<>(Arrays.asList(0,1,2,3,3,3, 4, 5, 6, 7, 8, 9));
+        ArrayList<ArrayList<Integer>> losingArray2 = new ArrayList<>();
+        ArrayList<Integer> expected2 = new ArrayList<>(Arrays.asList(0,1,2,0,0,3, 4, 5, 6, 7, 8, 9));
+
+        testCaseDeleteLosingKnownElements(gameboard2, losingArray2, expected2);
+
+        // if losingArray as elements
+        ArrayList<Integer> gameboard3 = new ArrayList<>(Arrays.asList(0,1,2,3,3,3, 4, 5, 6, 7, 8, 9,10,10,10));
+        ArrayList<ArrayList<Integer>> losingArray3 = new ArrayList<>();
+        ArrayList<Integer> losingElt2 = new ArrayList<>(Arrays.asList(0,0,0));
+        ArrayList<Integer> losingElt4 = new ArrayList<>(Arrays.asList(0,0,0,0,1));
+        ArrayList<Integer> losingElt7 = new ArrayList<>(Arrays.asList(0,0,0,0,0,0,0,1));
+        losingArray3.add(losingElt2);
+        losingArray3.add(losingElt4);
+        losingArray3.add(losingElt7);
+        ArrayList<Integer> expected3 = new ArrayList<>(Arrays.asList(0,0,0,0,0,3, 0, 5, 6, 0, 8, 9,0,0,10));
+
+        testCaseDeleteLosingKnownElements(gameboard3, losingArray3, expected3);
+
+
+    }
+
+
+
+
+
+    /**
+     * Returns an array of integers representing the number of occurrences
+     * of each line size in the gameboard.
+     * The first 3 index are equals to 0, because lines with 0 stick doesn't exists
+     * line with 1 et 2 sticks are useless 
+     * @param gameboard the gameboard
+     * @return an array of integers representing the number of occurrences of each line size in the gameboard
+     */
+    ArrayList<Integer> occurrenceTable(ArrayList<Integer> gameboard) {
+        // null check
+        if (gameboard == null) {
+            return null;
+        }
+        // Getting max value
+        int max = Collections.max(gameboard);
+        ArrayList<Integer> occurrences = new ArrayList<>();
+        if (max < 2){
+            max = 2;
+        }
+        // Pre-sizing occurrence table
+        for (int i = 0; i < max + 1; i++) {
+            occurrences.add(0);
+        }
+        // Incrementing occurrence table
+        for (int i = 0; i < gameboard.size(); i++) {
+            occurrences.set(gameboard.get(i), occurrences.get(gameboard.get(i)) + 1);
+        }
+        // Erasing index 1,2 because 2 stick lines doesn't affect anything
+        for (int i = 0; i < 3; i++) {
+            occurrences.set(i, 0);
+        }
+        return occurrences;
+    }
+
+
+
+
+
+    // << ----------------------- Following methods aren't edited from v1 ----------------------------------------------- >>
+
+
+    /**
+     * Test effectivness of jouerGagnant() method from counter and time
+     * 
+     */
+    void testJouerGagnantEff() {
+        System.out.println(" *** Testing Effectivness of jouerGagnant() v3 method");
+        ArrayList<Integer> gameboard = new ArrayList<Integer>();
+        double startTime;
+        double endTime;
+        double totalTime;
+        boolean result;
+        int stickNB = 7;
+        while(true && stickNB < 27){
+            // Variable initialization before calling jouerGagnant()
+            gameboard.clear();
+            gameboard.add(stickNB);
+
+            // Clearing "perdantes" to avoid errors and misconfigurations
+            perdantes.clear();
+            
+            // Clearing "gagnantes" to avoid errors and misconfigurations
+            gagnantes.clear();
+
+
+            cpt = 0;
+            System.out.println("Size : " + stickNB);
+            startTime = System.currentTimeMillis();
+            result = jouerGagnant(gameboard);
+            endTime = System.currentTimeMillis();
+            totalTime = endTime - startTime;
+            if (result == true){
+                System.out.println("Winnable move found");
+            } else {
+                System.out.println("Not any winnable move found");
+            }
+            System.out.println("counter : " + (int)cpt);
+            System.out.println("Total time : " + (int)totalTime + "ms");
+            System.out.println("Perdantes size : " + perdantes.size());
+            System.out.println("Gagnantes size : " + gagnantes.size());
+
+            System.out.println();
+            stickNB++;
+
+        }
+    }
 
 
      /**
@@ -120,203 +454,17 @@ class Grundy2RecPerdEtGagn {
         gameboard2.add(10);
         ArrayList<Integer> expected2 = null;
         testCaseIsFoundInWinningArrayList(gameboard2, winningArrayList2, expected2);
-
-
-
     }
 
 
 
-     
+
+
+
+
+
+
     
-
-	
-	/**
-     * Méthode RECURSIVE qui indique si la configuration (du jeu actuel ou jeu d'essai) est perdante
-     * 
-     * I added an ArrayList<Integer> perdantes which store losing 
-     * dispositions under their occurence form (see occurrenceTable() method)
-     * 
-     * @param jeu plateau de jeu actuel (l'état du jeu à un certain moment au cours de la partie)
-     * @return vrai si la configuration (du jeu) est perdante, faux sinon
-     */
-    boolean estPerdante(ArrayList<Integer> jeu) {
-        cpt++;
-        boolean ret = true; // par défaut la configuration est perdante
-		
-        if (jeu == null) {
-            System.err.println("estPerdante(): le paramètre jeu est null");
-        }
-		
-		else {
-			// si il n'y a plus que des tas de 1 ou 2 allumettes dans le plateau de jeu
-			// alors la situation est forcément perdante (ret=true) = FIN de la récursivité
-            if ( !estPossible(jeu) ) {
-                ret = true;
-            }
-			
-			else {
-				// création d'un jeu d'essais qui va examiner toutes les décompositions
-				// possibles à partir de jeu
-                ArrayList<Integer> essai = new ArrayList<Integer>(); // size = 0
-				
-                ArrayList<Integer> occurrenceEssai; // Store occurrenceTable if this version of essai is in "perdantes", null if not
-
-				// toute première décomposition : enlever 1 allumette au premier tas qui possède
-				// au moins 3 allumettes, ligne = -1 signifie qu'il n'y a plus de tas d'au moins 3 allumettes
-                int ligne = premier(jeu, essai);
-                while ( (ligne != -1) && ret) {
-					// mise en oeuvre de la règle numéro1
-					// Une situation (ou position) est dite perdante pour la machine (ou le joueur, peu importe) si et seulement si TOUTES 
-					// ses décompositions possibles (c-à-d TOUTES les actions qui consistent à décomposer un tas en 2 tas inégaux) sont 
-					// TOUTES gagnantes pour l’adversaire.
-					// Si UNE SEULE décomposition (à partir du jeu) est perdante (pour l'adversaire) alors la configuration n'EST PAS perdante.
-					// Ici l'appel à "estPerdante" est RECURSIF.
-
-                    // Testing if this version of "essai" is already found and stored in "perdantes"
-                    occurrenceEssai = isFoundInLosingArrayList(essai, perdantes);
-                    if (occurrenceEssai != null){
-                        ret = false;
-                    }
-
-
-                    // If the version of "essai" is'nt found in perdantes
-                    else{
-                        occurrenceEssai = isFoundInWinningArrayList(essai, gagnantes);
-                        if (occurrenceEssai != null) {
-                            ligne = suivant(jeu, essai, ligne);
-                        }
-                        else {
-                            if (estPerdante(essai) == true) {
-                                // If the version is a loosing one, add it to perdantes
-                                perdantes.add(occurrenceTable(essai));
-                                ret = false;
-                                
-                            } else {
-                                // génère la configuration d'essai suivante (c'est-à-dire UNE décomposition possible)
-                                // à partir du jeu, si ligne = -1 il n'y a plus de décomposition possible
-                                // if the version is a winning one, then adding it to gagnantes
-                                gagnantes.add(occurrenceTable(essai));
-                                ligne = suivant(jeu, essai, ligne);
-                                
-                            }
-                        }       
-                    }
-                }
-            }
-        }
-		
-        return ret;
-    }
-	
-
-
-
-
-     /**
-     * Test effectivness of jouerGagnant() method from counter and time
-     * 
-     */
-    void testJouerGagnantEff() {
-        System.out.println(" *** Testing Effectivness of jouerGagnant() v1 method");
-        ArrayList<Integer> gameboard = new ArrayList<Integer>();
-        double startTime;
-        double endTime;
-        double totalTime;
-        boolean result;
-        int stickNB = 3;
-        while(true){
-            // Variable initialization before calling jouerGagnant()
-            gameboard.clear();
-            gameboard.add(stickNB);
-
-            // Clearing "perdantes" to avoid errors and misconfigurations
-            perdantes.clear();
-            
-            // Clearing "gagnantes" to avoid errors and misconfigurations
-            gagnantes.clear();
-
-
-            cpt = 0;
-            System.out.println("Size : " + stickNB);
-            startTime = System.currentTimeMillis();
-            result = jouerGagnant(gameboard);
-            endTime = System.currentTimeMillis();
-            totalTime = endTime - startTime;
-            if (result == true){
-                System.out.println("Winnable move found");
-            } else {
-                System.out.println("Not any winnable move found");
-            }
-            System.out.println("counter : " + (int)cpt);
-            System.out.println("Total time : " + (int)totalTime + "ms");
-            System.out.println("Perdantes size : " + perdantes.size());
-            System.out.println("Gagnantes size : " + gagnantes.size());
-
-            System.out.println();
-            stickNB++;
-
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-    // << ----------------------- Following methods aren't edited from v1 ----------------------------------------------- >>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Returns an array of integers representing the number of occurrences
-     * of each line size in the gameboard.
-     * The first 3 index are equals to 0, because lines with 0 stick doesn't exists
-     * line with 1 et 2 sticks are useless 
-     * @param gameboard the gameboard
-     * @return an array of integers representing the number of occurrences of each line size in the gameboard
-     */
-    ArrayList<Integer> occurrenceTable(ArrayList<Integer> gameboard) {
-        // null check
-        if (gameboard == null) {
-            return null;
-        }
-        // Getting max value
-        int max = Collections.max(gameboard);
-        ArrayList<Integer> occurrences = new ArrayList<>();
-        if (max < 3){
-            max = 3;
-        }
-        // Pre-sizing occurrence table
-        for (int i = 0; i < max + 1; i++) {
-            occurrences.add(0);
-        }
-        // Incrementing occurrence table
-        for (int i = 0; i < gameboard.size(); i++) {
-            occurrences.set(gameboard.get(i), occurrences.get(gameboard.get(i)) + 1);
-        }
-        // Erasing index 1,2 because 2 stick lines doesn't affect anything
-        for (int i = 1; i < 3; i++) {
-            occurrences.set(i, 0);
-        }
-        return occurrences;
-    }
 
 
 
@@ -607,7 +755,6 @@ class Grundy2RecPerdEtGagn {
      * Joue le coup gagnant s'il existe
      * 
      * @param jeu plateau de jeu
-     * @param perdantes the 
      * @return vrai s'il y a un coup gagnant, faux sinon
      */
     boolean jouerGagnant(ArrayList<Integer> jeu) {
@@ -621,7 +768,6 @@ class Grundy2RecPerdEtGagn {
 			// Une situation (ou position) est dite gagnante pour la machine (ou le joueur, peu importe), s’il existe AU MOINS UNE 
 			// décomposition (c-à-d UNE action qui consiste à décomposer un tas en 2 tas inégaux) perdante pour l’adversaire.
             while (ligne != -1 && !gagnant) {
-
                 if (estPerdante(essai)) {
                     jeu.clear();
                     gagnant = true;
@@ -670,11 +816,12 @@ class Grundy2RecPerdEtGagn {
      */
     void testCasJouerGagnant(ArrayList<Integer> jeu, ArrayList<Integer> resJeu, boolean res) {
         // Arrange
-        System.out.print("jouerGagnant (" + jeu.toString() + ") : ");
-
+        System.out.println("jouerGagnant (" + jeu.toString() + ") : ");
+        System.out.println("Attentes : " + resJeu.toString());
         // Act
 
         boolean resExec = jouerGagnant(jeu);
+        System.out.println("Sortie : " + jeu.toString());
 
         // Assert
         System.out.print(jeu.toString() + " " + resExec + " : ");

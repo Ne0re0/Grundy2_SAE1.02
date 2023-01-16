@@ -173,11 +173,10 @@ class Grundy2RecPerdEtGagn {
             } else {
                 System.out.println("Not any winnable move found");
             }
-            System.out.println("counter : " + (int)cpt);
-            System.out.println("Total time : " + (int)totalTime + "ms");
+            System.out.println("Counter : " + (int)cpt);
+            System.out.println("Total time : " + totalTime + "ms");
             System.out.println("Perdantes size : " + perdantes.size());
             System.out.println("Gagnantes size : " + gagnantes.size());
-
             System.out.println();
             stickNB++;
 

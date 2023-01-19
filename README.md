@@ -10,7 +10,7 @@ Un bon nombre de méthodes nous ont été données dans un document.
 La documentation que nous écrirons devra être impérativement écrite en anglais.
 Toute action doit être commentée.
 
-###   Règle du jeu : 
+### Règle du jeu : 
 
 Le jeu se joue seul ou à 2.
 Il commence sur un plateau de n (vous décidez) allumettes alignées sur la même rangée.
@@ -21,6 +21,31 @@ Les allumettes séparées forment une nouvelle rangée qui pourra être séparé
 Vous l'aurez donc compris, un tas de 2 allumettes ne pourra plus être séparé car il enfreindrait la règle N°2.
 Lorsqu'il ne reste que des rangées de 1 ou 2 allumettes, le jeu est terminé.
 Celui qui ne peut plus jouer à perdu.
+
+
+###  Code source :   
+Nom du fichier source qui nous a été donné Grundy2RecBrute.java
+
+### Version 0 : 
+Nom du fichier source :  Grundy2RecBruteEff.java
+Ajout de la boucle du jeu
+
+### Version 1 :
+nom du fichier source : Grundy2RecPerdantes.java
+Ajout de la sauvegardes des dispositions du jeu perdantes pour ne pas les recalculer
+
+### Version 2 : 
+nom du fichier source : Grundy2RecPerdEtGagn.java
+Ajout de la sauvegardes des dispositions du jeu gagnantes pour ne pas les recalculer
+
+### Version 3 : 
+nom du fichier source : Grundy2RecPerdantNeutre.java
+Ajout de la suppression des dispositions perdantes et des doublons car ils n'influent pas sur la nature de la disposition
+
+### Version 4 : 
+nom du fichier source : Grundy2RecGplusGequalsP.java
+Ajout de la suppressions des tas gagnants de même types 
+
 
 
 ### Théorèmes utilisés : 

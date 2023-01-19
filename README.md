@@ -26,7 +26,7 @@ Celui qui ne peut plus jouer à perdu.
 ###  Code source :   
 Nom du fichier source qui nous a été donné Grundy2RecBrute.java
 
-### Version 0 : 
+### Version 0 : 
 Nom du fichier source :  Grundy2RecBruteEff.java
 Ajout de la boucle du jeu
 
@@ -42,7 +42,7 @@ Ajout de la sauvegardes des dispositions du jeu gagnantes pour ne pas les recalc
 nom du fichier source : Grundy2RecPerdantNeutre.java
 Ajout de la suppression des dispositions perdantes et des doublons car ils n'influent pas sur la nature de la disposition
 
-### Version 4 : 
+### Version 4 : 
 nom du fichier source : Grundy2RecGplusGequalsP.java
 Ajout de la suppressions des tas gagnants de même types 
 

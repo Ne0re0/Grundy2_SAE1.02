@@ -2,11 +2,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Grundy 2 v1
+ * Grundy 2 version 1
+ * 
+ * Implemented in v0 :
  * This version contains a method playAgainstAI()
- * This method allows a user to play Grundy Game VS the computer
+ * This method allows the user to play Grundy Game VS the computer
+ * 
+ * 
+ * Implemented in v1 :
  * This version implements the saving of losing dispositions as well as the 
- * method isLosingDecomposition which compares the different dispositions with 
+ * method isLosingDecomposition() which compares the different dispositions with 
  * the known losing dispositions
  * 
  * Implements  ArrayList<Integer> occurrenceTable(ArrayList<Integer> gameboard)
@@ -29,12 +34,12 @@ class Grundy2RecPerdantes {
      * Méthode principal du programme
      */
     void principal() {
-        //playAgainstAI();
-        //testIsFoundInLosingArrayList();
-        testJouerGagnantEff();
-        //testDisplay();
-        //testJouerGagnant();
-        //testOccurenceTable();
+        // playAgainstAI();
+        // testIsFoundInLosingArrayList();
+        // testJouerGagnantEff();
+        // testDisplay();
+        // testJouerGagnant();
+        testOccurenceTable();
     }
 
 
@@ -46,8 +51,8 @@ class Grundy2RecPerdantes {
      /**
      * Returns an array of integers representing the number of occurrences
      * of each line size in the gameboard.
-     * The first 3 index are equals to 0, because lines with 0 stick doesn't exists
-     * line with 1 et 2 sticks are useless 
+     * The first 3 index are equals to 0, because lines with 0 stick don't exist
+     * and line with 1 et 2 sticks are useless 
      * @param gameboard the gameboard
      * @return an array of integers representing the number of occurrences of each line size in the gameboard
      */
@@ -59,8 +64,8 @@ class Grundy2RecPerdantes {
         // Getting max value
         int max = Collections.max(gameboard);
         ArrayList<Integer> occurrences = new ArrayList<>();
-        if (max < 3){
-            max = 3;
+        if (max < 2){
+            max = 2;
         }
         // Pre-sizing occurrence table
         for (int i = 0; i < max + 1; i++) {
@@ -83,7 +88,7 @@ class Grundy2RecPerdantes {
      * Tests the occurrenceTable method with a given gameboard and expected result.
      *
      * @param gameboard the gameboard to test
-     * @param expected the expected result for the given gameboard
+     * @param expected the expected result from the given gameboard
      */
     void testCaseOccurenceTable(ArrayList<Integer> gameboard, ArrayList<Integer> expected){
         System.out.println(" *** testCaseOccurenceTable");
@@ -103,6 +108,8 @@ class Grundy2RecPerdantes {
      * Tests the occurrenceTable method with a predefined gameboard and expected result.
      */
     void testOccurenceTable(){
+        // gameboard = {5,2,5,3,5,1}
+        // expected = {0,0,0,1,0,3}         expected.get(2) == 0 because indexes 0,1,2 are set to 0
         ArrayList<Integer> gameboard = new ArrayList<>();
         gameboard.add(5);
         gameboard.add(2);
@@ -113,26 +120,35 @@ class Grundy2RecPerdantes {
         ArrayList<Integer> expectedResult1 = new ArrayList<>();
         expectedResult1.add(0);
         expectedResult1.add(0);
-        expectedResult1.add(0);
+        expectedResult1.add(1);
         expectedResult1.add(1);
         expectedResult1.add(0);
         expectedResult1.add(3);
+        // Call method
         testCaseOccurenceTable(gameboard, expectedResult1);
     }
 
     /**
-     * This method is use to compare of the given arrangement of the gameboard is already
-     * store in the losing ArrayList. If the arrangement is found, it returns the occurrence table
-     * else, it returns null
-     * @param gameboard
+     * This method is use to compare if the given disposition of the gameboard is already
+     * stored in the losing ArrayList.
+     * @param gameboard the gameboard
      * @param losingArray i.e. ArrayList perdantes
-     * @return 
+     * @return occurrence table if gameboard is found, else, it returns null
      */
     ArrayList<Integer> isFoundInLosingArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray){
+        // Avoid errors
+        if ( gameboard == null || losingArray == null){
+            System.err.println("ERROR isFoundInLosingArray() : gameboard is null or losingArray is null");
+            return null;
+        }
+
         ArrayList<Integer> result = null;
+        // Get occurrence table to compare
         ArrayList<Integer> occurrence = occurrenceTable(gameboard);
+        // Compare with every element of the losing arraylist
         for (int i = 0 ; i < losingArray.size() && result == null ; i++ ){
             if (losingArray.get(i).equals(occurrence)){
+                // If found, set result
                 result = occurrence;
             }
         }
@@ -140,23 +156,26 @@ class Grundy2RecPerdantes {
     }
 
     /**
-     * @param gameboard
-     * @param losingArray
-     * @param expected
+     * Test IsFoundInLosingArrayList from a given case
+     * @param gameboard the gameboard
+     * @param losingArray the losing arraylist
+     * @param expected the expected output
      */
     void testCaseIsFoundInLosingArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray, ArrayList<Integer> expected){
         System.out.println(" *** Testing ...");
         System.out.println("Gameboard : " + gameboard);
         System.out.println("losingArray : " + losingArray);
         System.out.println("Expected : " + expected);
+        // Call method and store result
+        ArrayList<Integer> result = isFoundInLosingArrayList(gameboard, losingArray);
         if (expected == null){
-            if ( isFoundInLosingArrayList(gameboard, losingArray) == expected){
+            if ( result == expected){
                 System.out.println("OK !");
             } else {
                 System.err.println("ERROR in isFoundInLosingArrayList()");
             }
         }else{
-            if (expected.equals(isFoundInLosingArrayList(gameboard, losingArray))){
+            if (expected.equals(result)){
                 System.out.println("OK !");
             } else {
                 System.err.println("ERROR in isFoundInLosingArrayList()");
@@ -166,10 +185,14 @@ class Grundy2RecPerdantes {
     }
 
     /**
-     * 
+     * Concise test of isFoundInLosingArrayList()
      */
     void testIsFoundInLosingArrayList(){
         System.out.println(" *** Testing IsFoundInLosingArrayList()");
+
+        // losingArrayList = {{0,0,0,3}}
+        // gameboard = {3,3,3}
+        // expected = {0,0,0,3}
         ArrayList<ArrayList<Integer>> losingArrayList = new ArrayList<>(); 
         ArrayList<Integer> losingArrayListElt = new ArrayList<>();
         losingArrayListElt.add(0);
@@ -182,14 +205,19 @@ class Grundy2RecPerdantes {
         gameboard.add(3);
         gameboard.add(3);
         ArrayList<Integer> expected1 = occurrenceTable(gameboard);
+        // Call method
         testCaseIsFoundInLosingArrayList(gameboard, losingArrayList, expected1);
 
+        // losingArrayList2 = {}
+        // gameboard2 = {2,4,10}
+        // expected2 = null
         ArrayList<ArrayList<Integer>> losingArrayList2 = new ArrayList<>(); 
         ArrayList<Integer> gameboard2 = new ArrayList<>();
         gameboard2.add(2);
         gameboard2.add(4);
         gameboard2.add(10);
         ArrayList<Integer> expected2 = null;
+        // Call method
         testCaseIsFoundInLosingArrayList(gameboard2, losingArrayList2, expected2);
 
 
@@ -201,8 +229,6 @@ class Grundy2RecPerdantes {
 	/**
      * Méthode RECURSIVE qui indique si la configuration (du jeu actuel ou jeu d'essai) est perdante
      * 
-     * I added an ArrayList<Integer> perdantes which store losing 
-     * dispositions under their occurence form (see occurrenceTable() method)
      * 
      * @param jeu plateau de jeu actuel (l'état du jeu à un certain moment au cours de la partie)
      * @return vrai si la configuration (du jeu) est perdante, faux sinon
@@ -225,9 +251,17 @@ class Grundy2RecPerdantes {
 			else {
 				// création d'un jeu d'essais qui va examiner toutes les décompositions
 				// possibles à partir de jeu
-                ArrayList<Integer> essai = new ArrayList<Integer>(); // size = 0
-				
+                
+                
+                
+                
+                
+                ArrayList<Integer> essai = new ArrayList<Integer>(); // It will store all possibilities one by one
                 ArrayList<Integer> occurrenceEssai; // Store occurrenceTable if this version of essai is in "perdantes", null if not
+
+
+
+
 
 				// toute première décomposition : enlever 1 allumette au premier tas qui possède
 				// au moins 3 allumettes, ligne = -1 signifie qu'il n'y a plus de tas d'au moins 3 allumettes
@@ -240,11 +274,17 @@ class Grundy2RecPerdantes {
 					// Si UNE SEULE décomposition (à partir du jeu) est perdante (pour l'adversaire) alors la configuration n'EST PAS perdante.
 					// Ici l'appel à "estPerdante" est RECURSIF.
 
-                    // Testing if this version of "essai" is already found and stored in "perdantes"
+
+
+                    // Testing if this disposition of "essai" is already found and stored in "perdantes"
                     occurrenceEssai = isFoundInLosingArrayList(essai, perdantes);
                     if (occurrenceEssai != null){
                         ret = false;
                     }
+
+
+
+
                     // If the version of "essai" is'nt found 
                     else{
                         if (estPerdante(essai) == true) {
@@ -269,40 +309,45 @@ class Grundy2RecPerdantes {
 
 
 
-     /**
-     * Test effectivness of jouerGagnant() method from counter and time
-     * 
+    /**
+     * Test effectiveness of jouerGagnant() method from counter and time
+     * Implemented in v0
+     * Add print(perdantes.size()) in v1
      */
     void testJouerGagnantEff() {
-        System.out.println(" *** Testing Effectivness of jouerGagnant() v1 method");
-        ArrayList<Integer> gameboard = new ArrayList<Integer>();
-        double startTime;
-        double endTime;
-        double totalTime;
-        boolean result;
-        int stickNB = 3;
-        while(true){
+        System.out.println(" *** Testing Effectiveness of jouerGagnant() v1 method");
+        ArrayList<Integer> gameboard = new ArrayList<Integer>();   // The Gameboard
+        double startTime;               // Current time before calling jouerGagnant()
+        double endTime;                 // Current time after calling jouerGagnant()
+        double totalTime;               // endTime - startTime
+        boolean result;                 // Is a playable move found or not
+        int stickNB = 3;                
+        while (true){
             // Variable initialization before calling jouerGagnant()
-            gameboard.clear();
+            gameboard.clear();;
             gameboard.add(stickNB);
-
-            // Clearing "perdantes" to avoid errors and misconfigurations
-            perdantes.clear();
             cpt = 0;
             System.out.println("Size : " + stickNB);
+            // Get time
             startTime = System.currentTimeMillis();
+            // Call method
             result = jouerGagnant(gameboard);
+            // Get time
             endTime = System.currentTimeMillis();
+            // Get total time
             totalTime = endTime - startTime;
+            
+            // Display informations
             if (result == true){
                 System.out.println("Winnable move found");
             } else {
                 System.out.println("Not any winnable move found");
             }
-            System.out.println( "Counter : " + (int)cpt);
-            System.out.println("Totaltime : " + (int)totalTime + "ms");
+            System.out.println("Counter : " + (int)cpt);
+            System.out.println("Total Time : " +(int)totalTime + "ms");
             System.out.println("Perdantes size : " + perdantes.size());
             System.out.println();
+            // Add 1 to gameboard size
             stickNB++;
 
         }
@@ -362,62 +407,57 @@ class Grundy2RecPerdantes {
 
 
 
-
-
-
-
-
-
-
-
     /**
-     * This method allows a player to play Grundy game against an IA
-     * Implemented in version0
+     * Start a Grundy game against the AI
+     * Implemented in v0
      */
     void playAgainstAI(){
         System.out.println();
-        System.out.println(" ** Game is starting ... ** ");
+        System.out.println(" *** Game is starting ... *** ");
         int stickQuantity;      // Store the size of the first line when starting the game
-        int lineNB;             // Store line index which player want to split
-        int stickNB;            // Store stick quantity which player want to split
-        int divideQuantity = 0; //Store the number of active lines in the gameboard
-        int current_player;     // store 0 if current player is computer and 1 if it's the player
+        int lineNB;             // Store the line index which player wants to split
+        int stickNB;            // Store stick quantity which player wants to split
+        int activeLines = 0;    // Store the number of active lines on the gameboard
+        int current_player;     // store 0 if the current player is the AI and 1 if the current player is the user
         // Define player username
         String player1 = SimpleInput.getString("Username : ");
-        // Define size of the gameboard
+        // Define the size of the gameboard
         do {stickQuantity = SimpleInput.getInt("Enter the number of sticks (must be superior to 3) : ");
         } while(stickQuantity < 3);
         // Create Gameboard
         ArrayList<Integer> gameboard = new ArrayList<Integer>();
         gameboard.add(stickQuantity);
         // Define who is starting
-        do {current_player = SimpleInput.getInt("who is starting ? (0:Computer| 1:" + player1 + ") : ");
+        do {current_player = SimpleInput.getInt("Who is starting ? (0:Computer | 1:" + player1 + ") : ");
         } while (current_player > 2 || current_player < 0);
-        // Launching the game
+        // Launch the game
+        System.out.println();
         while (estPossible(gameboard)){
-            // Display the Gameboard
+            // Display the gameboard
             display(gameboard);
             // Player turn's
             if (current_player == 1){
                 System.out.println(player1 + "'s turn");
-                // Ask for the line player want to play and verify if the line exists and is playable
+                System.out.println();
+                // Ask for the line player wants to play and verify if the line exists and is playable
                 do {lineNB = SimpleInput.getInt("Enter line number : ");
-                } while (lineNB < 0 || lineNB > divideQuantity || gameboard.get(lineNB) <= 2);
-                // Asks for the number of sticks the player want to split and verify the possibility
+                } while (lineNB < 0 || lineNB > activeLines || gameboard.get(lineNB) <= 2);
+                // Ask for the number of sticks the player wants to split and verify if it's possible
                 do {stickNB = SimpleInput.getInt("Enter stick number you want to split : ");
               } while (stickNB < 1 || stickNB >= gameboard.get(lineNB) || 2*stickNB == gameboard.get(lineNB) ); 
-              // Split the line
+              // Split
               enlever(gameboard, lineNB, stickNB);
             } 
             // AI turn's
             else {
                 System.out.println("Computer turn's");
-                // if it's possible, play a winner move, else play randomly
+                System.out.println();
+                // If it's possible, play a winner move, else play randomly
                 if (jouerGagnant(gameboard) == false){
-                    int[] move = {0,0}; // Store the random move {LineNB, StickNB}
-                    // Select a playable line
+                    int[] move = {0,0}; // Store the random move {LineIndex, StickQuantityToSplit}
+                    // Select a random playable line
                     while (gameboard.get(move[0]) <= 2){
-                        move[0]++;
+                        move[0] = (int) (Math.random()*(gameboard.size()-1));
                     }
                     // Select a random playable stick number in the selected line
                     while (move[1] < 1 || move[1] > gameboard.get(move[0])-1 || gameboard.get(move[0])-move[1] == move[1]){
@@ -426,18 +466,17 @@ class Grundy2RecPerdantes {
                     enlever(gameboard, move[0], move[1]);
                 }
             }
-            // Changing player turn's
+            // Change current player
             current_player = 1 - current_player;
-            // Adding an active line
-            divideQuantity++;
+            // Add an active line
+            activeLines++;
         }
         // When gameboard isn't playable anymore
-        System.out.println("Final gameboard : ");
         // Display gameboard
         display(gameboard);
         // Display the winner
         System.out.println();
-        System.out.println("Game closed !");
+        System.out.println("Game finished !");
         if (current_player == 0){
             System.out.println("**********\t     YOU WON       \t**********");
             System.out.println("**********\t Congrats " + player1 + " !!  \t**********");

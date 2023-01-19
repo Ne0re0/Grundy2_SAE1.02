@@ -3,7 +3,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * Grundy 2 v3
+ * Grundy 2 version 3
+ * 
+ * Implemented in previous versions : 
  * This version contains a method playAgainstAI()
  * This method allows a user to play Grundy Game VS the computer
  * This version implements the saving of losing dispositions as well as the 
@@ -20,6 +22,8 @@ import java.util.Collections;
  * Implements ArrayList<Integer> isFoundInWinningArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> winningArray)
  * that test if the occurrenceTable of the gameboard is stored in winningArray
  * 
+ * 
+ * In this version : 
  * Implements the deletion of losing situations with 
  * void deleteLosingKnownElements(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray)
  * 
@@ -40,13 +44,13 @@ class Grundy2RecPerdantNeutre {
      */
     void principal() {
         
-        //playAgainstAI();
-        //testIsFoundInLosingArrayList();
-        //testIsFoundInWinningArrayList();
-        testJouerGagnantEff();
-        //testDisplay();
-        //testJouerGagnant();
-        //testOccurenceTable();
+        // playAgainstAI();
+        // testIsFoundInLosingArrayList();
+        // testIsFoundInWinningArrayList();
+        // testJouerGagnantEff();
+        // testDisplay();
+        // testJouerGagnant();
+        // testOccurenceTable();
         // testDeleteLosingKnownElements();
     }
 
@@ -183,12 +187,10 @@ class Grundy2RecPerdantNeutre {
         if (gameboard.size() == 0){
             return;
         }
-        
         ArrayList<Integer> tmp = new ArrayList<>();
         ArrayList<Integer> tmpOccurrence = new ArrayList<>();
         ArrayList<Integer> intersect = new ArrayList<>();
         
-      
         // Remove duplicates
         ArrayList<Integer> gameboardOccurrence = occurrenceTable(gameboard);
         int index;
@@ -329,6 +331,32 @@ class Grundy2RecPerdantNeutre {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // << ----------------------- Following methods aren't edited from v2 ----------------------------------------------- >> //
 
 
@@ -345,11 +373,32 @@ class Grundy2RecPerdantNeutre {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
+     * Implemented in v1
      * Returns an array of integers representing the number of occurrences
      * of each line size in the gameboard.
-     * The first 3 index are equals to 0, because lines with 0 stick doesn't exists
-     * line with 1 et 2 sticks are useless 
+     * The first 3 index are equals to 0, because lines with 0 stick don't exist
+     * and line with 1 et 2 sticks are useless 
      * @param gameboard the gameboard
      * @return an array of integers representing the number of occurrences of each line size in the gameboard
      */
@@ -358,11 +407,9 @@ class Grundy2RecPerdantNeutre {
         if (gameboard == null) {
             return null;
         }
-        // Getting max value (I observed that that max value of ArrayList([1]) is 2, i don't know why)
+        // Getting max value
         int max = Collections.max(gameboard);
         ArrayList<Integer> occurrences = new ArrayList<>();
-
-        // avoid out of bound errors
         if (max < 2){
             max = 2;
         }
@@ -375,7 +422,7 @@ class Grundy2RecPerdantNeutre {
             occurrences.set(gameboard.get(i), occurrences.get(gameboard.get(i)) + 1);
         }
         // Erasing index 1,2 because 2 stick lines doesn't affect anything
-        for (int i = 0; i < 3; i++) {
+        for (int i = 1; i < 3; i++) {
             occurrences.set(i, 0);
         }
         return occurrences;
@@ -384,148 +431,10 @@ class Grundy2RecPerdantNeutre {
 
 
     /**
-     * Test effectivness of jouerGagnant() method from counter and time
-     * 
-     */
-    void testJouerGagnantEff() {
-        System.out.println(" *** Testing Effectivness of jouerGagnant() v3 method");
-        ArrayList<Integer> gameboard = new ArrayList<Integer>();
-        double startTime;
-        double endTime;
-        double totalTime;
-        boolean result;
-        int stickNB = 3;
-        while(true ){
-            // Variable initialization before calling jouerGagnant()
-            gameboard.clear();
-            gameboard.add(stickNB);
-
-            // Clearing "perdantes" to avoid errors and misconfigurations
-            perdantes.clear();
-            
-            // Clearing "gagnantes" to avoid errors and misconfigurations
-            gagnantes.clear();
-
-
-            cpt = 0;
-            System.out.println("Size : " + stickNB);
-            startTime = System.currentTimeMillis();
-            result = jouerGagnant(gameboard);
-            endTime = System.currentTimeMillis();
-            totalTime = endTime - startTime;
-            if (result == true){
-                System.out.println("Winnable move found");
-            } else {
-                System.out.println("Not any winnable move found");
-            }
-            System.out.print("counter : ");
-            System.out.println((int)cpt);
-
-            System.out.print("Total time : ");
-            
-            System.out.println((int)totalTime);
-            System.out.print("ms");
-            System.out.println("Perdantes size : " + perdantes.size());
-            System.out.println("Gagnantes size : " + gagnantes.size());
-
-            System.out.println();
-            stickNB++;
-
-        }
-    }
-
-
-     /**
-     * This method is use to compare of the given arrangement of the gameboard is already
-     * store in the winning ArrayList. If the arrangement is found, it returns the occurrence table
-     * else, it returns null
-     * @param gameboard
-     * @param winningArray i.e. ArrayList perdantes
-     * @return 
-     */
-    ArrayList<Integer> isFoundInWinningArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> winningArray){
-        ArrayList<Integer> result = null;
-        ArrayList<Integer> occurrence = occurrenceTable(gameboard);
-        for (int i = 0 ; i < winningArray.size() && result == null ; i++ ){
-            if (winningArray.get(i).equals(occurrence)){
-                result = occurrence;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Testing a Unique case : IsFoundInWinningArrayList()
-     * @param gameboard
-     * @param winningArray
-     * @param expected
-     */
-    void testCaseIsFoundInWinningArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> winningArray, ArrayList<Integer> expected){
-        System.out.println(" *** Testing ...");
-        System.out.println("Gameboard : " + gameboard);
-        System.out.println("winningArray : " + winningArray);
-        System.out.println("Expected : " + expected);
-        if (expected == null){
-            if ( isFoundInWinningArrayList(gameboard, winningArray) == expected){
-                System.out.println("OK !");
-            } else {
-                System.err.println("ERROR in isFoundInWinningArrayList()");
-            }
-        }else{
-            if (expected.equals(isFoundInWinningArrayList(gameboard, winningArray))){
-                System.out.println("OK !");
-            } else {
-                System.err.println("ERROR in isFoundInWinningArrayList()");
-            }
-        }
-        
-    }
-
-    /**
-     * Testing IsFoundInWinningArrayList()
-     */
-    void testIsFoundInWinningArrayList(){
-        System.out.println(" *** Testing IsFoundInWinningArrayList()");
-        ArrayList<ArrayList<Integer>> winningArrayList = new ArrayList<>(); 
-        ArrayList<Integer> winningArrayListElt = new ArrayList<>();
-        winningArrayListElt.add(0);
-        winningArrayListElt.add(0);
-        winningArrayListElt.add(0);
-        winningArrayListElt.add(3);
-        winningArrayList.add(winningArrayListElt);
-        ArrayList<Integer> gameboard = new ArrayList<>();
-        gameboard.add(3);
-        gameboard.add(3);
-        gameboard.add(3);
-        ArrayList<Integer> expected1 = occurrenceTable(gameboard);
-        testCaseIsFoundInWinningArrayList(gameboard, winningArrayList, expected1);
-
-        ArrayList<ArrayList<Integer>> winningArrayList2 = new ArrayList<>(); 
-        ArrayList<Integer> gameboard2 = new ArrayList<>();
-        gameboard2.add(2);
-        gameboard2.add(4);
-        gameboard2.add(10);
-        ArrayList<Integer> expected2 = null;
-        testCaseIsFoundInWinningArrayList(gameboard2, winningArrayList2, expected2);
-    }
-
-
-
-
-
-
-
-
-
-    
-
-
-
-    /**
      * Tests the occurrenceTable method with a given gameboard and expected result.
      *
      * @param gameboard the gameboard to test
-     * @param expected the expected result for the given gameboard
+     * @param expected the expected result from the given gameboard
      */
     void testCaseOccurenceTable(ArrayList<Integer> gameboard, ArrayList<Integer> expected){
         System.out.println(" *** testCaseOccurenceTable");
@@ -545,6 +454,8 @@ class Grundy2RecPerdantNeutre {
      * Tests the occurrenceTable method with a predefined gameboard and expected result.
      */
     void testOccurenceTable(){
+        // gameboard = {5,2,5,3,5,1}
+        // expected = {0,0,0,1,0,3}         expected.get(2) == 0 because indexes 0,1,2 are set to 0
         ArrayList<Integer> gameboard = new ArrayList<>();
         gameboard.add(5);
         gameboard.add(2);
@@ -555,26 +466,35 @@ class Grundy2RecPerdantNeutre {
         ArrayList<Integer> expectedResult1 = new ArrayList<>();
         expectedResult1.add(0);
         expectedResult1.add(0);
-        expectedResult1.add(0);
+        expectedResult1.add(1);
         expectedResult1.add(1);
         expectedResult1.add(0);
         expectedResult1.add(3);
+        // Call method
         testCaseOccurenceTable(gameboard, expectedResult1);
     }
 
     /**
-     * This method is use to compare of the given arrangement of the gameboard is already
-     * store in the losing ArrayList. If the arrangement is found, it returns the occurrence table
-     * else, it returns null
-     * @param gameboard
+     * This method is use to compare if the given disposition of the gameboard is already
+     * stored in the losing ArrayList.
+     * @param gameboard the gameboard
      * @param losingArray i.e. ArrayList perdantes
-     * @return 
+     * @return occurrence table if gameboard is found, else, it returns null
      */
     ArrayList<Integer> isFoundInLosingArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray){
+        // Avoid errors
+        if ( gameboard == null || losingArray == null){
+            System.err.println("ERROR isFoundInLosingArray() : gameboard is null or losingArray is null");
+            return null;
+        }
+
         ArrayList<Integer> result = null;
+        // Get occurrence table to compare
         ArrayList<Integer> occurrence = occurrenceTable(gameboard);
+        // Compare with every element of the losing arraylist
         for (int i = 0 ; i < losingArray.size() && result == null ; i++ ){
             if (losingArray.get(i).equals(occurrence)){
+                // If found, set result
                 result = occurrence;
             }
         }
@@ -582,23 +502,26 @@ class Grundy2RecPerdantNeutre {
     }
 
     /**
-     * @param gameboard
-     * @param losingArray
-     * @param expected
+     * Test IsFoundInLosingArrayList from a given case
+     * @param gameboard the gameboard
+     * @param losingArray the losing arraylist
+     * @param expected the expected output
      */
     void testCaseIsFoundInLosingArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray, ArrayList<Integer> expected){
         System.out.println(" *** Testing ...");
         System.out.println("Gameboard : " + gameboard);
         System.out.println("losingArray : " + losingArray);
         System.out.println("Expected : " + expected);
+        // Call method and store result
+        ArrayList<Integer> result = isFoundInLosingArrayList(gameboard, losingArray);
         if (expected == null){
-            if ( isFoundInLosingArrayList(gameboard, losingArray) == expected){
+            if ( result == expected){
                 System.out.println("OK !");
             } else {
                 System.err.println("ERROR in isFoundInLosingArrayList()");
             }
         }else{
-            if (expected.equals(isFoundInLosingArrayList(gameboard, losingArray))){
+            if (expected.equals(result)){
                 System.out.println("OK !");
             } else {
                 System.err.println("ERROR in isFoundInLosingArrayList()");
@@ -608,10 +531,14 @@ class Grundy2RecPerdantNeutre {
     }
 
     /**
-     * 
+     * Concise test of isFoundInLosingArrayList()
      */
     void testIsFoundInLosingArrayList(){
         System.out.println(" *** Testing IsFoundInLosingArrayList()");
+
+        // losingArrayList = {{0,0,0,3}}
+        // gameboard = {3,3,3}
+        // expected = {0,0,0,3}
         ArrayList<ArrayList<Integer>> losingArrayList = new ArrayList<>(); 
         ArrayList<Integer> losingArrayListElt = new ArrayList<>();
         losingArrayListElt.add(0);
@@ -624,17 +551,178 @@ class Grundy2RecPerdantNeutre {
         gameboard.add(3);
         gameboard.add(3);
         ArrayList<Integer> expected1 = occurrenceTable(gameboard);
+        // Call method
         testCaseIsFoundInLosingArrayList(gameboard, losingArrayList, expected1);
 
+        // losingArrayList2 = {}
+        // gameboard2 = {2,4,10}
+        // expected2 = null
         ArrayList<ArrayList<Integer>> losingArrayList2 = new ArrayList<>(); 
         ArrayList<Integer> gameboard2 = new ArrayList<>();
         gameboard2.add(2);
         gameboard2.add(4);
         gameboard2.add(10);
         ArrayList<Integer> expected2 = null;
+        // Call method
         testCaseIsFoundInLosingArrayList(gameboard2, losingArrayList2, expected2);
     }
 
+
+
+    /**
+     * Test effectiveness of jouerGagnant() method from counter and time
+     * Implemented in v0
+     * Add print(perdantes.size()) in v1
+     * Add print(gagnantes.size()) in v2
+     */
+    void testJouerGagnantEff() {
+        System.out.println(" *** Testing Effectiveness of jouerGagnant() v1 method");
+        ArrayList<Integer> gameboard = new ArrayList<Integer>();   // The Gameboard
+        double startTime;               // Current time before calling jouerGagnant()
+        double endTime;                 // Current time after calling jouerGagnant()
+        double totalTime;               // endTime - startTime
+        boolean result;                 // Is a playable move found or not
+        int stickNB = 3;                
+        while (true){
+            // Variable initialization before calling jouerGagnant()
+            gameboard.clear();;
+            gameboard.add(stickNB);
+            cpt = 0;
+            System.out.println("Size : " + stickNB);
+            // Get time
+            startTime = System.currentTimeMillis();
+            // Call method
+            result = jouerGagnant(gameboard);
+            // Get time
+            endTime = System.currentTimeMillis();
+            // Get total time
+            totalTime = endTime - startTime;
+            
+            // Display informations
+            if (result == true){
+                System.out.println("Winnable move found");
+            } else {
+                System.out.println("Not any winnable move found");
+            }
+            System.out.println("Counter : " + (int)cpt);
+            System.out.println("Total Time : " +(int)totalTime + "ms");
+            System.out.println("Perdantes size : " + perdantes.size());
+            System.out.println("Gagnantes size : " + gagnantes.size());
+            System.out.println();
+            // Add 1 to gameboard size
+            stickNB++;
+
+        }
+    }
+
+
+    /**
+     * This method is used to compare if the given disposition of the gameboard is already
+     * stored in the winning ArrayList. 
+     * @param gameboard the disposition i.e. the gameboard
+     * @param winningArray i.e. ArrayList gagnantes
+     * @return If the arrangement is found, it returns the occurrence table
+     * else, it returns null
+     */
+    ArrayList<Integer> isFoundInWinningArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> winningArray){
+        // Avoid errors
+        if (gameboard == null || winningArray == null){
+            System.err.println("ERROR isFoundInWinningArrayList() : gameboard or winningArray is null");
+            return null;
+        }
+        
+        ArrayList<Integer> result = null;
+        // Get occurrence table to compare
+        ArrayList<Integer> occurrence = occurrenceTable(gameboard);
+        // Compare with every element
+        for (int i = 0 ; i < winningArray.size() && result == null ; i++ ){
+            if (winningArray.get(i).equals(occurrence)){
+                // If found, set result
+                result = occurrence;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Testing a unique case : IsFoundInWinningArrayList()
+     * @param gameboard the gameboard
+     * @param winningArray the winning arrayList
+     * @param expected the expected result
+     */
+    void testCaseIsFoundInWinningArrayList(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> winningArray, ArrayList<Integer> expected){
+        System.out.println(" *** Testing ...");
+        System.out.println("Gameboard : " + gameboard);
+        System.out.println("winningArray : " + winningArray);
+        System.out.println("Expected : " + expected);
+        ArrayList<Integer> result = isFoundInWinningArrayList(gameboard, winningArray);
+        if (expected == null){
+            if ( result ==  expected){
+                System.out.println("OK !");
+            } else {
+                System.err.println("ERROR in isFoundInWinningArrayList()");
+            }
+        }else{
+            if (expected.equals(result)){
+                System.out.println("OK !");
+            } else {
+                System.err.println("ERROR in isFoundInWinningArrayList()");
+            }
+        }
+        
+    }
+
+    /**
+     * Concise test of IsFoundInWinningArrayList()
+     */
+    void testIsFoundInWinningArrayList(){
+        System.out.println(" *** Testing IsFoundInWinningArrayList()");
+
+        // winningArrayList = {{0,0,0,3}}
+        // gameboard = {3,3,3}
+        // expected = {0,0,0,3}
+        ArrayList<ArrayList<Integer>> winningArrayList = new ArrayList<>(); 
+        ArrayList<Integer> winningArrayListElt = new ArrayList<>();
+        winningArrayListElt.add(0);
+        winningArrayListElt.add(0);
+        winningArrayListElt.add(0);
+        winningArrayListElt.add(3);
+        winningArrayList.add(winningArrayListElt);
+        ArrayList<Integer> gameboard = new ArrayList<>();
+        gameboard.add(3);
+        gameboard.add(3);
+        gameboard.add(3);
+        ArrayList<Integer> expected1 = occurrenceTable(gameboard);
+        // Call method
+        testCaseIsFoundInWinningArrayList(gameboard, winningArrayList, expected1);
+
+
+        // winningArrayList2 = {}
+        // gameboard2 = {2,4,10}
+        // expected2 = null
+        ArrayList<ArrayList<Integer>> winningArrayList2 = new ArrayList<>(); 
+        ArrayList<Integer> gameboard2 = new ArrayList<>();
+        gameboard2.add(2);
+        gameboard2.add(4);
+        gameboard2.add(10);
+        ArrayList<Integer> expected2 = null;
+        // Call method
+        testCaseIsFoundInWinningArrayList(gameboard2, winningArrayList2, expected2);
+    }
+
+
+
+
+
+
+
+
+
+    
+
+
+
+    
 
 
 

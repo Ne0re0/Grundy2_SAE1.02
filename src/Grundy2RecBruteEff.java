@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * Grundy 2 v0
+ * Grundy 2 version 0
  * This version contains a method playAgainstAI() and display()
  * Those methods allow a user to play Grundy Game VS the computer
  * This class implement void testJouerGagnantEff() to test effectiveness
@@ -20,18 +20,17 @@ class Grundy2RecBruteEff {
      * Méthode principal du programme
      */
     void principal() {
-        //playAgainstAI();
-        //testJouerGagnantEff();
-        testDisplay();
+        // playAgainstAI();
+        // testJouerGagnantEff();
+        // testDisplay();
 
-        //testJouerGagnant();
-
+        // testJouerGagnant();
     }
 
  
 
     /**
-     * 
+     * Start a Grundy game against the AI
      */
     void playAgainstAI(){
         System.out.println();
@@ -77,9 +76,9 @@ class Grundy2RecBruteEff {
                 // If it's possible, play a winner move, else play randomly
                 if (jouerGagnant(gameboard) == false){
                     int[] move = {0,0}; // Store the random move {LineIndex, StickQuantityToSplit}
-                    // Select a playable line
+                    // Select a random playable line
                     while (gameboard.get(move[0]) <= 2){
-                        move[0]++;
+                        move[0] = (int) (Math.random()*(gameboard.size()-1));
                     }
                     // Select a random playable stick number in the selected line
                     while (move[1] < 1 || move[1] > gameboard.get(move[0])-1 || gameboard.get(move[0])-move[1] == move[1]){
@@ -227,7 +226,7 @@ class Grundy2RecBruteEff {
 
 
 
-    
+
 
 
 

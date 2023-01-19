@@ -3,7 +3,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * Grundy 2 v4
+ * Grundy 2 version 4
+ * 
+ * Implemented in previous versions : 
  * This version contains a method playAgainstAI()
  * This method allows a user to play Grundy Game VS the computer
  * This version implements the saving of losing dispositions as well as the 
@@ -23,16 +25,18 @@ import java.util.Collections;
  * Implements the deletion of losing situations with 
  * void deleteLosingKnownElements(ArrayList<Integer> gameboard, ArrayList<ArrayList<Integer>> losingArray)
  * 
+ * 
+ * In this version : 
  * Implement rule 4.1 : Elements of sitations can be represented by their type
  * Two winning element of same type are losing
  * but two winning element of different type are winning
  * With this rule, the method deleteLosingKnownElements become time wasting
- * We can just apply this rule
+ * We can just apply this rule and remove couples
  * 
  * Contains a cpt variable to test effectivness
  * Contains a class variable named perdantes which will store losing arrangments
  * Contains a class variable named gagnantes which will store winning arrangments
- * Contains a basic array named "type" which has elements's types
+ * Contains a basic int array named "type" which has elements's types
  */
 
 class Grundy2RecGplusGequalsP {
@@ -55,6 +59,7 @@ class Grundy2RecGplusGequalsP {
         // testJouerGagnant();
         // testOccurenceTable();
         // testDeleteLosingKnownElements();
+        // testDeleteWinningElementCouples();
     }
 
 
@@ -62,9 +67,6 @@ class Grundy2RecGplusGequalsP {
 	
 	/**
      * Méthode RECURSIVE qui indique si la configuration (du jeu actuel ou jeu d'essai) est perdante
-     * 
-     * I added an ArrayList<Integer> perdantes which store losing 
-     * dispositions under their occurence form (see occurrenceTable() method)
      * 
      * @param jeu plateau de jeu actuel (l'état du jeu à un certain moment au cours de la partie)
      * @return vrai si la configuration (du jeu) est perdante, faux sinon
@@ -170,52 +172,96 @@ class Grundy2RecGplusGequalsP {
 
 
     /**
-     * @param gameboard 
+     * This method remove couples i.e. {5,5} become {0,0} but {5,5,5} become {0,0,5}
+     * This method also remove elements with their type equal to 0 because they are losing elements
+     * This method also remove couples with the same type
+     * Based on class variable int[] types
+     * @param gameboard the gameboard
      */
     void deleteWinningElementCouples(ArrayList<Integer> gameboard){
+        // Avoid errors
         if (gameboard == null){
             return;
         }
 
         int element1;
         int element2;
+
+        // For every element in gameboard
         for (int i = 0; i < gameboard.size(); i++){
             element1 = gameboard.get(i);
             try {
-                if (type[element1] == 0){
+                // If type = 0 then remove it
+                if (element1 <= 51 && type[element1] == 0){
                     gameboard.set(i,0);
     
                 } else {
+
+                    // For every other elements of gameboard
                     for (int j = i+1; j < gameboard.size() ; j ++){
                         element2 = gameboard.get(j);
 
-                        // If elements are equals, then set both to 0 because of rule 3.5
+                        // If both  elements are equals, then set both to 0 because of rule 3.5
                         if (element1 == element2){
                             gameboard.set(i,0);
                             gameboard.set(j,0);
                             break;
                         }
                         try {
+                            // If both elements have the same type, then remove them
                             if (type[element1] == type[element2]){
                                 gameboard.set(i,0);
                                 gameboard.set(j,0);
                             }
                         } catch (Exception e) {
-                            // value superior to 51
+                            // Value superior to 51
                         }
                         
                     }
                 }
             } catch (Exception e){
-                // value superior to 51
+                // Error
             }
             
-            
-            // } catch (Exception e) {
-            //     //System.err.println("deleteWinningElementCouples : Index out of bounds");
-            // }
-            
         }
+    }
+
+
+
+    /**
+     * @param gameboard
+     * @param expected
+     */
+    void testCaseDeleteWinningElementCouples(ArrayList<Integer> gameboard, ArrayList<Integer> expected){
+        System.out.println(" *** Testing ...");
+        System.out.println("Gameboard : " + gameboard);
+        System.out.println("Expected result : " + expected);
+        // Call method
+        deleteWinningElementCouples(gameboard);
+        System.out.println("Real result : " + gameboard);
+        if (expected.equals(gameboard)){
+            System.out.println("OK");
+        } else {
+            System.out.println("ERROR");
+        }
+    }
+
+
+    void testDeleteWinningElementCouples(){
+        // gameboard = {1,2,3,4,5}
+        // expected = {0,0,3,0,5}
+        // 1,2 and 4 are type 0 | 3 and 5 have different types
+        ArrayList<Integer> gameboard = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
+        ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0,0,3,0,5));
+        testCaseDeleteWinningElementCouples(gameboard, expected );
+
+        // gameboard2 = {150,150,150,3,6}
+        // expected2 = {0,0,150,0,0}
+        // 150 appears 3 times, it should now appear only one time
+        // 3 and 6 have the same type so we remove them
+        ArrayList<Integer> gameboard2 = new ArrayList<>(Arrays.asList(150,150,150,3,6));
+        ArrayList<Integer> expected2 = new ArrayList<>(Arrays.asList(0,0,150,0,0));
+        testCaseDeleteWinningElementCouples(gameboard2, expected2 );
     }
 
 
@@ -236,11 +282,19 @@ class Grundy2RecGplusGequalsP {
 
 
 
-
-
-
-
     // << ----------------------- Following methods aren't edited from v2 ----------------------------------------------- >> //
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -433,55 +487,51 @@ class Grundy2RecGplusGequalsP {
 
 
     /**
-     * Test effectivness of jouerGagnant() method from counter and time
-     * 
+     * Test effectiveness of jouerGagnant() method from counter and time
+     * Implemented in v0
+     * Add print(perdantes.size()) in v1
+     * Add print(gagnantes.size()) in v2
      */
     void testJouerGagnantEff() {
-        System.out.println(" *** Testing Effectivness of jouerGagnant() v3 method");
-        ArrayList<Integer> gameboard = new ArrayList<Integer>();
-        double startTime;
-        double endTime;
-        double totalTime;
-        boolean result;
-        int stickNB = 3;
-        while(true ){
+        System.out.println(" *** Testing Effectiveness of jouerGagnant() v1 method");
+        ArrayList<Integer> gameboard = new ArrayList<Integer>();   // The Gameboard
+        double startTime;               // Current time before calling jouerGagnant()
+        double endTime;                 // Current time after calling jouerGagnant()
+        double totalTime;               // endTime - startTime
+        boolean result;                 // Is a playable move found or not
+        int stickNB = 3;                
+        while (true){
             // Variable initialization before calling jouerGagnant()
-            gameboard.clear();
+            gameboard.clear();;
             gameboard.add(stickNB);
-
-            // Clearing "perdantes" to avoid errors and misconfigurations
-            perdantes.clear();
-            
-            // Clearing "gagnantes" to avoid errors and misconfigurations
-            gagnantes.clear();
-
-
             cpt = 0;
-            // System.out.println("Size : " + stickNB);
+            System.out.println("Size : " + stickNB);
+            // Get time
             startTime = System.currentTimeMillis();
+            // Call method
             result = jouerGagnant(gameboard);
+            // Get time
             endTime = System.currentTimeMillis();
+            // Get total time
             totalTime = endTime - startTime;
-            if (result == true){
-                // System.out.println("Winnable move found");
-            } else {
-                // System.out.println("Not any winnable move found");
-            }
-            // System.out.print("counter : ");
-            System.out.println((int)cpt);
-
-            // System.out.print("Total time : ");
             
-            // System.out.println((int)totalTime);
-            // System.out.println("ms");
-            // System.out.println("Perdantes size : " + perdantes.size());
-            // System.out.println("Gagnantes size : " + gagnantes.size());
-
-            // System.out.println();
+            // Display informations
+            if (result == true){
+                System.out.println("Winnable move found");
+            } else {
+                System.out.println("Not any winnable move found");
+            }
+            System.out.println("Counter : " + (int)cpt);
+            System.out.println("Total Time : " +(int)totalTime + "ms");
+            System.out.println("Perdantes size : " + perdantes.size());
+            System.out.println("Gagnantes size : " + gagnantes.size());
+            System.out.println();
+            // Add 1 to gameboard size
             stickNB++;
 
         }
     }
+
 
 
      /**

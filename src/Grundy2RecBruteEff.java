@@ -4,9 +4,9 @@ import java.util.Collections;
 
 /**
  * Grundy 2 v0
- * This version contains a method playAgainstAI()
- * This method allows a user to play Grundy Game VS the computer
- * This method implement void testJouerGagnantEff() to test effectivness
+ * This version contains a method playAgainstAI() and display()
+ * Those methods allow a user to play Grundy Game VS the computer
+ * This class implement void testJouerGagnantEff() to test effectiveness
  * This version doesn't implement anything to improve performances
  * 
  * 
@@ -20,9 +20,10 @@ class Grundy2RecBruteEff {
      * Méthode principal du programme
      */
     void principal() {
-        playAgainstAI();
+        //playAgainstAI();
         //testJouerGagnantEff();
-        //testDisplay();
+        testDisplay();
+
         //testJouerGagnant();
 
     }
@@ -30,52 +31,52 @@ class Grundy2RecBruteEff {
  
 
     /**
-     * This method allows a player to play Grundy game against an IA
+     * 
      */
     void playAgainstAI(){
         System.out.println();
         System.out.println(" *** Game is starting ... *** ");
         int stickQuantity;      // Store the size of the first line when starting the game
-        int lineNB;             // Store line index which player want to split
-        int stickNB;            // Store stick quantity which player want to split
-        int divideQuantity = 0; // Store the number of active lines in the gameboard
-        int current_player;     // store 0 if current player is computer and 1 if it's the player
+        int lineNB;             // Store the line index which player wants to split
+        int stickNB;            // Store stick quantity which player wants to split
+        int activeLines = 0;    // Store the number of active lines on the gameboard
+        int current_player;     // store 0 if the current player is the AI and 1 if the current player is the user
         // Define player username
         String player1 = SimpleInput.getString("Username : ");
-        // Define size of the gameboard
+        // Define the size of the gameboard
         do {stickQuantity = SimpleInput.getInt("Enter the number of sticks (must be superior to 3) : ");
         } while(stickQuantity < 3);
         // Create Gameboard
         ArrayList<Integer> gameboard = new ArrayList<Integer>();
         gameboard.add(stickQuantity);
         // Define who is starting
-        do {current_player = SimpleInput.getInt("Who is starting ? (0:Ordinateur | 1:" + player1 + ") : ");
+        do {current_player = SimpleInput.getInt("Who is starting ? (0:Computer | 1:" + player1 + ") : ");
         } while (current_player > 2 || current_player < 0);
-        // Launching the game
+        // Launch the game
         System.out.println();
         while (estPossible(gameboard)){
-            // Display the Gameboard
+            // Display the gameboard
             display(gameboard);
             // Player turn's
             if (current_player == 1){
                 System.out.println(player1 + "'s turn");
                 System.out.println();
-                // Ask for the line player want to play and verify if the line exists and is playable
+                // Ask for the line player wants to play and verify if the line exists and is playable
                 do {lineNB = SimpleInput.getInt("Enter line number : ");
-                } while (lineNB < 0 || lineNB > divideQuantity || gameboard.get(lineNB) <= 2);
-                // Asks for the number of sticks the player want to split and verify the possibility
+                } while (lineNB < 0 || lineNB > activeLines || gameboard.get(lineNB) <= 2);
+                // Ask for the number of sticks the player wants to split and verify if it's possible
                 do {stickNB = SimpleInput.getInt("Enter stick number you want to split : ");
               } while (stickNB < 1 || stickNB >= gameboard.get(lineNB) || 2*stickNB == gameboard.get(lineNB) ); 
-              // Split the line
+              // Split
               enlever(gameboard, lineNB, stickNB);
             } 
             // AI turn's
             else {
                 System.out.println("Computer turn's");
                 System.out.println();
-                // if it's possible, play a winner move, else play randomly
+                // If it's possible, play a winner move, else play randomly
                 if (jouerGagnant(gameboard) == false){
-                    int[] move = {0,0}; // Store the random move {LineNB, StickNB}
+                    int[] move = {0,0}; // Store the random move {LineIndex, StickQuantityToSplit}
                     // Select a playable line
                     while (gameboard.get(move[0]) <= 2){
                         move[0]++;
@@ -87,17 +88,17 @@ class Grundy2RecBruteEff {
                     enlever(gameboard, move[0], move[1]);
                 }
             }
-            // Changing player turn's
+            // Change current player
             current_player = 1 - current_player;
-            // Adding an active line
-            divideQuantity++;
+            // Add an active line
+            activeLines++;
         }
         // When gameboard isn't playable anymore
         // Display gameboard
         display(gameboard);
         // Display the winner
         System.out.println();
-        System.out.println("Game closed !");
+        System.out.println("Game finished !");
         if (current_player == 0){
             System.out.println("**********\t     YOU WON       \t**********");
             System.out.println("**********\t Congrats " + player1 + " !!  \t**********");
@@ -109,35 +110,41 @@ class Grundy2RecBruteEff {
 
 
     /**
-     * Test effectivness of jouerGagnant() method from counter and time
-     * 
+     * Test effectiveness of jouerGagnant() method from counter and time
      */
     void testJouerGagnantEff() {
-        System.out.println(" *** Testing Effectivness of jouerGagnant() v1 method");
-        ArrayList<Integer> gameboard;
-        double startTime;
-        double endTime;
-        double totalTime;
-        boolean result;
-        int stickNB = 3;
+        System.out.println(" *** Testing Effectiveness of jouerGagnant() v0 method");
+        ArrayList<Integer> gameboard = new ArrayList<Integer>();   // The Gameboard
+        double startTime;               // Current time before calling jouerGagnant()
+        double endTime;                 // Current time after calling jouerGagnant()
+        double totalTime;               // endTime - startTime
+        boolean result;                 // Is a playable move found or not
+        int stickNB = 3;                
         while (true){
             // Variable initialization before calling jouerGagnant()
-            gameboard = new ArrayList<Integer>();
+            gameboard.clear();;
             gameboard.add(stickNB);
             cpt = 0;
             System.out.println("Size : " + stickNB);
+            // Get time
             startTime = System.currentTimeMillis();
+            // Call method
             result = jouerGagnant(gameboard);
+            // Get time
             endTime = System.currentTimeMillis();
+            // Get total time
             totalTime = endTime - startTime;
+            
+            // Display informations
             if (result == true){
                 System.out.println("Winnable move found");
             } else {
                 System.out.println("Not any winnable move found");
             }
-            System.out.println((int)cpt);
+            System.out.println("Counter : " + (int)cpt);
             System.out.println("Total Time : " +(int)totalTime + "ms");
             System.out.println();
+            // Add 1 to gameboard size
             stickNB++;
 
         }
@@ -158,12 +165,17 @@ class Grundy2RecBruteEff {
 
     /**
      * Displays the gameboard from an ArrayList<Integer>
-     * @param gameboard
+     * @param gameboard the gameboard
      */
     void display(ArrayList<Integer> gameboard){
-        if (gameboard.equals(new ArrayList<Integer>())){
+        // Avoid errors
+        if (gameboard == null || gameboard.equals(new ArrayList<Integer>())){
             System.err.println("ERROR : display() the given gameboard is empty");
         } else {
+
+            // For every element in gameboard 
+            // Print line index
+            // Print "|" as much as the index value
             for( int i = 0 ; i < gameboard.size() ; i++){
                 System.out.print(i +" : ");
                 for ( int j = 0 ; j < gameboard.get(i); j++){
@@ -180,11 +192,15 @@ class Grundy2RecBruteEff {
      */
     void testDisplay(){
         System.out.println(" *** testDisplay()");
+
+        // gameboard = {3,4,2}
         ArrayList<Integer> gameboard = new ArrayList<>();
         gameboard.add(3);
         gameboard.add(4);
         gameboard.add(2);
         display(gameboard);
+
+        // gameboard = {1,2,3,4,5}
         ArrayList<Integer> gameboard2 = new ArrayList<>();
         gameboard2.add(1);
         gameboard2.add(2);
@@ -192,9 +208,16 @@ class Grundy2RecBruteEff {
         gameboard2.add(4);
         gameboard2.add(5);
         display(gameboard2);
-        System.out.println("The following should be an error statement : ");
+
+        // gameboard.size() = 0
+        System.out.println("This should be an error statement : ");
         ArrayList<Integer> gameboard3 = new ArrayList<>();
         display(gameboard3);
+
+        // gameboard = null
+        System.out.println("This should be an error statement : ");
+        ArrayList<Integer> gameboard4 = null;
+        display(gameboard4);
 
     }
 
@@ -204,10 +227,15 @@ class Grundy2RecBruteEff {
 
 
 
+    
 
 
 
-    // << ------------------------  Following method aren't edited from given code -------------------------------------------->>
+
+
+    // << ------------------------  Following methods aren't edited from given code -------------------------------------------->>
+
+
 
 
 

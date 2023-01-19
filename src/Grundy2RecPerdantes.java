@@ -391,7 +391,7 @@ class Grundy2RecPerdantes {
         ArrayList<Integer> gameboard = new ArrayList<Integer>();
         gameboard.add(stickQuantity);
         // Define who is starting
-        do {current_player = SimpleInput.getInt("who is starting ? (0:Ordinateur | 1:" + player1 + ") : ");
+        do {current_player = SimpleInput.getInt("who is starting ? (0:Computer| 1:" + player1 + ") : ");
         } while (current_player > 2 || current_player < 0);
         // Launching the game
         while (estPossible(gameboard)){

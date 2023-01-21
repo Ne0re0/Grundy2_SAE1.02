@@ -20,7 +20,7 @@ class Grundy2RecBruteEff {
      * Méthode principal du programme
      */
     void principal() {
-        // playAgainstAI();
+        playAgainstAI();
         // testJouerGagnantEff();
         // testDisplay();
 

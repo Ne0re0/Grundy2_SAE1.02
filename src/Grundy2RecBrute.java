@@ -16,9 +16,9 @@ class Grundy2RecBrute {
      * Méthode principal du programme
      */
     void principal() {
-        testJouerGagnant();
-		//testPremier();
-		//testSuivant();
+        // testJouerGagnant();
+		// testPremier();
+		// testSuivant();
     }
 	
     /**

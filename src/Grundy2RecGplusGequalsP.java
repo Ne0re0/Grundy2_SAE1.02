@@ -51,10 +51,10 @@ class Grundy2RecGplusGequalsP {
      */
     void principal() {
         
-        // playAgainstAI();
+        playAgainstAI();
         // testIsFoundInLosingArrayList();
         // testIsFoundInWinningArrayList();
-        testJouerGagnantEff();
+        // testJouerGagnantEff();
         // testDisplay();
         // testJouerGagnant();
         // testOccurenceTable();

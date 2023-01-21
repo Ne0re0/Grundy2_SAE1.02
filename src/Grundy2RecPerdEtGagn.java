@@ -41,7 +41,7 @@ class Grundy2RecPerdEtGagn {
      * Méthode principal du programme
      */
     void principal() {
-        // playAgainstAI();
+        playAgainstAI();
         // testIsFoundInLosingArrayList();
         // testIsFoundInWinningArrayList();
         // testJouerGagnantEff();

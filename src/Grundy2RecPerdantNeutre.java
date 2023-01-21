@@ -44,7 +44,7 @@ class Grundy2RecPerdantNeutre {
      */
     void principal() {
         
-        // playAgainstAI();
+        playAgainstAI();
         // testIsFoundInLosingArrayList();
         // testIsFoundInWinningArrayList();
         // testJouerGagnantEff();

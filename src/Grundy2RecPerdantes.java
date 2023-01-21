@@ -34,12 +34,12 @@ class Grundy2RecPerdantes {
      * Méthode principal du programme
      */
     void principal() {
-        // playAgainstAI();
+        playAgainstAI();
         // testIsFoundInLosingArrayList();
         // testJouerGagnantEff();
         // testDisplay();
         // testJouerGagnant();
-        testOccurenceTable();
+        // testOccurenceTable();
     }
 
 

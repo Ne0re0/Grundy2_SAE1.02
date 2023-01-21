@@ -863,20 +863,26 @@ class Grundy2RecGplusGequalsP {
 
     /**
      * Displays the gameboard from an ArrayList<Integer>
-     * @param gameboard
+     * @param gameboard the gameboard
      */
     void display(ArrayList<Integer> gameboard){
-        if (gameboard.equals(new ArrayList<Integer>())){
+        // Avoid errors
+        if (gameboard == null || gameboard.equals(new ArrayList<Integer>())){
             System.err.println("ERROR : display() the given gameboard is empty");
         } else {
-            System.out.println("Gameboard : ");
+
+            // For every element in gameboard 
+            // Print line index
+            // Print "|" as much as the index value
             for( int i = 0 ; i < gameboard.size() ; i++){
+                System.out.print(i +" : ");
                 for ( int j = 0 ; j < gameboard.get(i); j++){
                     System.out.print("| ");
                 }
             System.out.println();
             }
         }
+        System.out.println();
     }
 
     /**

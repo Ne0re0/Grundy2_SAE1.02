@@ -16,6 +16,7 @@ class Grundy2RecBrute {
      * Méthode principal du programme
      */
     void principal() {
+        System.out.println("cannot be ran: source code");
         // testJouerGagnant();
 		// testPremier();
 		// testSuivant();

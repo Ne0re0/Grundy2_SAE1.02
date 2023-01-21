@@ -53,3 +53,11 @@ L'ensemble des règles utilisées peuvent êtres retrouvées ici :
 http://mathenjeans.free.fr/amej/edition/9903grun/grundy2.html  
 
 
+## Pour jour :
+```̀`bash
+git clone https://github.com/Ne0re0/Grundy2_SAE1.02.git
+cd Grundy2_SAE1.02
+java -cp class/ Start Grundy2RecGplusGequalsP 
+````
+
+

@@ -15,7 +15,7 @@ class Grundy2RecBrute {
     /**
      * Méthode principal du programme
      */
-    void principal() {
+    public static void main(String[] args) {
         System.out.println("cannot be ran: source code");
         // testJouerGagnant();
 		// testPremier();
@@ -28,7 +28,7 @@ class Grundy2RecBrute {
      * @param jeu plateau de jeu
      * @return vrai s'il y a un coup gagnant, faux sinon
      */
-    boolean jouerGagnant(ArrayList<Integer> jeu) {
+    static boolean jouerGagnant(ArrayList<Integer> jeu) {
         boolean gagnant = false;
         if (jeu == null) {
             System.err.println("suivant(): le paramètre jeu est null");
@@ -60,7 +60,7 @@ class Grundy2RecBrute {
      * @param jeu plateau de jeu actuel (l'état du jeu à un certain moment au cours de la partie)
      * @return vrai si la configuration (du jeu) est perdante, faux sinon
      */
-    boolean estPerdante(ArrayList<Integer> jeu) {
+    static boolean estPerdante(ArrayList<Integer> jeu) {
 	
         boolean ret = true; // par défaut la configuration est perdante
 		
@@ -113,7 +113,7 @@ class Grundy2RecBrute {
      * @param jeu plateau de jeu
      * @return vrai si la configuration est gagnante, faux sinon
      */
-    boolean estGagnante(ArrayList<Integer> jeu) {
+    static boolean estGagnante(ArrayList<Integer> jeu) {
         boolean ret = false;
         if (jeu == null) {
             System.err.println("estGagnante(): le paramètre jeu est null");
@@ -126,7 +126,7 @@ class Grundy2RecBrute {
     /**
      * Tests succincts de la méthode joueurGagnant()
      */
-    void testJouerGagnant() {
+    static void testJouerGagnant() {
         System.out.println();
         System.out.println("*** testJouerGagnant() ***");
 
@@ -148,7 +148,7 @@ class Grundy2RecBrute {
 	 * @param resJeu le plateau de jeu après avoir joué gagnant
 	 * @param res le résultat attendu par jouerGagnant
      */
-    void testCasJouerGagnant(ArrayList<Integer> jeu, ArrayList<Integer> resJeu, boolean res) {
+    static void testCasJouerGagnant(ArrayList<Integer> jeu, ArrayList<Integer> resJeu, boolean res) {
         // Arrange
         System.out.print("jouerGagnant (" + jeu.toString() + ") : ");
 
@@ -171,7 +171,7 @@ class Grundy2RecBrute {
      * @param ligne ligne (tas) sur laquelle les alumettes doivent être séparées
      * @param nb    nombre d'alumettes RETIREE de la ligne après séparation
      */
-    void enlever ( ArrayList<Integer> jeu, int ligne, int nb ) {
+    static void enlever ( ArrayList<Integer> jeu, int ligne, int nb ) {
 		// traitement des erreurs
         if (jeu == null) {
             System.err.println("enlever() : le paramètre jeu est null");
@@ -198,7 +198,7 @@ class Grundy2RecBrute {
      * @param jeu      plateau de jeu
      * @return vrai s'il existe au moins un tas de 3 allumettes ou plus, faux sinon
      */
-    boolean estPossible(ArrayList<Integer> jeu) {
+    static boolean estPossible(ArrayList<Integer> jeu) {
         boolean ret = false;
         if (jeu == null) {
             System.err.println("estPossible(): le paramètre jeu est null");
@@ -221,7 +221,7 @@ class Grundy2RecBrute {
      * @param jeuEssai nouvelle configuration du jeu
      * @return le numéro du tas divisé en deux ou (-1) si il n'y a pas de tas d'au moins 3 allumettes
      */
-    int premier(ArrayList<Integer> jeu, ArrayList<Integer> jeuEssai) {
+    static int premier(ArrayList<Integer> jeu, ArrayList<Integer> jeuEssai) {
 	
         int numTas = -1; // pas de tas à séparer par défaut
 		int i;
@@ -271,7 +271,7 @@ class Grundy2RecBrute {
     /**
      * Tests succincts de la méthode premier()
      */
-    void testPremier() {
+    static void testPremier() {
         System.out.println();
         System.out.println("*** testPremier()");
 
@@ -292,7 +292,7 @@ class Grundy2RecBrute {
 	 * @param ligne le numéro du tas séparé en premier
 	 * @param res le plateau de jeu après une première séparation
      */
-    void testCasPremier(ArrayList<Integer> jeu, int ligne, ArrayList<Integer> res) {
+    static void testCasPremier(ArrayList<Integer> jeu, int ligne, ArrayList<Integer> res) {
         // Arrange
         System.out.print("premier (" + jeu.toString() + ") : ");
         ArrayList<Integer> jeuEssai = new ArrayList<Integer>();
@@ -315,7 +315,7 @@ class Grundy2RecBrute {
      * @param ligne    le numéro du tas qui est le dernier à avoir été séparé
      * @return le numéro du tas divisé en deux pour la nouvelle configuration, -1 si plus aucune décomposition n'est possible
      */
-    int suivant(ArrayList<Integer> jeu, ArrayList<Integer> jeuEssai, int ligne) {
+    static int suivant(ArrayList<Integer> jeu, ArrayList<Integer> jeuEssai, int ligne) {
 	
         // System.out.println("suivant(" + jeu.toString() + ", " +jeuEssai.toString() +
         // ", " + ligne + ") = ");
@@ -380,7 +380,7 @@ class Grundy2RecBrute {
     /**
      * Tests succincts de la méthode suivant()
      */
-    void testSuivant() {
+    static void testSuivant() {
         System.out.println();
         System.out.println("*** testSuivant() ****");
 
@@ -436,7 +436,7 @@ class Grundy2RecBrute {
 	 * @param resJeu est le jeuEssai attendu après séparation
 	 * @param resLigne est le numéro attendu du tas qui est séparé
      */
-    void testCasSuivant(ArrayList<Integer> jeu, ArrayList<Integer> jeuEssai, int ligne, ArrayList<Integer> resJeu, int resLigne) {
+    static void testCasSuivant(ArrayList<Integer> jeu, ArrayList<Integer> jeuEssai, int ligne, ArrayList<Integer> resJeu, int resLigne) {
         // Arrange
         System.out.print("suivant (" + jeu.toString() + ", " + jeuEssai.toString() + ", " + ligne + ") : ");
         // Act
